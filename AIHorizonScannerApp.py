@@ -200,13 +200,6 @@ elif section == "Section 2: Geographic Distribution":
 elif section == "Section 3: Innovation":
     st.header("Innovation")
     
-    
-    
-    st.markdown("""
-    **Why This Matters:** Tracking innovation through patents and research affiliations helps us 
-    understand where AI capabilities are being developed and who controls this intellectual property.
-    """)
-    
     # Worldwide AI Related Patent Applications by Status
     st.subheader("Worldwide AI Related Patent Applications by Status")
     fig = go.Figure()
@@ -242,13 +235,6 @@ elif section == "Section 3: Innovation":
 
 elif section == "Section 4: Investment":
     st.header("Investment")
-    
-    
-    
-    st.markdown("""
-    **Why This Matters:** Investment patterns reveal which AI applications and regions are attracting 
-    capital, shaping the future direction of AI development and commercialization.
-    """)
     
     # Annual Private Investment in AI by Location
     st.subheader("Annual Private Investment in AI by Location")
@@ -288,11 +274,6 @@ elif section == "Section 4: Investment":
 elif section == "Section 5: Public View":
     st.header("Public View")
     
-    
-    st.markdown("""
-    **Why This Matters:** Public perception influences policy decisions, adoption rates, and the 
-    social license for AI development, making it crucial to understand diverse perspectives.
-    """)
     
     # Americans Opinion About Their Work Being Automated
     st.subheader("Americans Opinion About Their Work Being Automated")
