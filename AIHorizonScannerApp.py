@@ -373,8 +373,3 @@ elif section == "Comparison Tool":
 
 # Footer
 st.markdown("---")
-st.markdown("""
-**Data Sources:** AI Index Report, Stanford HAI, PatentsView, Crunchbase, Pew Research  
-**Last Updated:** {}  
-**Contact:** info@democratizing-ai.org  
-""".format(datetime.now().strftime("%B %d, %Y")))
