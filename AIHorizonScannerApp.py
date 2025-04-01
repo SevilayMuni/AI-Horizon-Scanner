@@ -27,7 +27,7 @@ def load_data():
             'geo': pd.read_parquet('./data/df_cumu.parquet', engine = 'pyarrow'),
             'inno': pd.read_parquet('./data/df_patent_world.parquet', engine = 'pyarrow'),
             'invest': pd.read_parquet('./data/df_investment.parquet', engine = 'pyarrow'),
-            'public': pd.read_parquet('./data/df_automated_survey', engine = 'pyarrow')}
+            'public': pd.read_parquet('./data/df_automated_survey.parquet', engine = 'pyarrow')}
 
 data = load_data()
 
