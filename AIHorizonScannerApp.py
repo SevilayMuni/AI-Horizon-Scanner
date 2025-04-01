@@ -94,14 +94,6 @@ section = st.sidebar.radio("Go to:", [
     "Section 5: Public View",
     "Comparison Tool"])
 
-# Helper functions
-def create_download_button(fig, filename):
-    buf = BytesIO()
-    fig.write_image(buf, format="png")
-    png_data = base64.b64encode(buf.getvalue()).decode() 
-    st.download_button(label="📥 Save as PNG", data=png_data,
-                       file_name=f"{filename}.png", mime="image/png")
-
 
 def show_explanation(explanation, reference=None):
     # Create a unique key for this explanation section
@@ -121,13 +113,6 @@ def show_explanation(explanation, reference=None):
         explanation_content = f"""
         <div class="chart-explanation">
             {explanation}
-        """
-        if reference:
-            explanation_content += f"""
-            <div class="reference-link">
-                <em>Reference: {reference}</em>
-            </div>
-            """
         explanation_content += "</div>"
         
         st.markdown(explanation_content, unsafe_allow_html=True)
@@ -136,19 +121,9 @@ def show_explanation(explanation, reference=None):
 if section == "Section 1: AI Development":
     st.header("AI Development")
     
-    # Dynamic KPIs
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        latest_cost = data['dev']['cost__inflation_adjusted'].max()
-        st.metric("Most Expensive System to Train", f"${latest_cost/1e6:.1f}M")
-    with col2:
-        avg_params = data['dev'].groupby('year')['parameters'].mean().iloc[-1]
-        st.metric("Avg Parameters in New Systems", f"{avg_params/1e9:.1f}B", "Latest Year")
-    with col3:
-        domain_growth = (data['dev']['domain'].value_counts().nlargest(1).index[0])
-        st.metric("Fastest Growing Domain", domain_growth, "By system count")
+   
     
-    st.markdown("""
+    st.write(
     **Why This Matters:** Understanding the resources required to develop AI systems helps us assess 
     who can participate in AI development and how access to these technologies might be distributed.
     """)
@@ -183,26 +158,13 @@ if section == "Section 1: AI Development":
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
         "This chart shows the inflation-adjusted cost to train notable AI systems over time, broken down by domain. The logarithmic scale reveals the exponential growth in training costs, particularly for language models.",
-        reference="AI Index Report 2023, Stanford HAI"
-    )
-    create_download_button(fig, "cost_to_train_ai_systems")
+        reference="AI Index Report 2023, Stanford HAI")
+    
 
 elif section == "Section 2: Geographic Distribution":
     st.header("Geographic Distribution")
     
-    # Dynamic KPIs
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        top_country = data['geo'].groupby('entity')['cumulative_count'].max().idxmax()
-        st.metric("Leading Country", top_country, "By AI system count")
-    with col2:
-        fastest_growing = (data['geo'].groupby('entity')['cumulative_count']
-                         .apply(lambda x: x.iloc[-1]/x.iloc[0])
-                         .idxmax())
-        st.metric("Fastest Growing Region", fastest_growing, "5-year growth")
-    with col3:
-        us_share = data['geo'][data['geo']['entity'] == "United States"]['cumulative_count'].max() / data['geo']['cumulative_count'].max()
-        st.metric("US Market Share", f"{us_share:.1%}", "Of global systems")
+    
     
     st.markdown("""
     **Why This Matters:** The geographic concentration of AI development affects global power dynamics 
@@ -241,25 +203,12 @@ elif section == "Section 2: Geographic Distribution":
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
         "This chart tracks the cumulative count of notable AI systems developed by country over time, revealing the geographic concentration of AI development capabilities.",
-        reference="AI Index Report 2023, Crunchbase analysis"
-    )
-    create_download_button(fig, "ai_systems_by_country")
+        reference="AI Index Report 2023, Crunchbase analysis")
 
 elif section == "Section 3: Innovation":
     st.header("Innovation")
     
-    # Dynamic KPIs
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        patents_2023 = data['inno'][data['inno']['year'] == 2023]['num_patent_granted_field_all'].sum()
-        st.metric("Patents Granted (2023)", f"{patents_2023:,}", "Worldwide")
-    with col2:
-        top_industry = data['inno'].groupby('industry')['patent_count'].sum().idxmax()
-        st.metric("Top Industry", top_industry, "By patent count")
-    with col3:
-        yoy_growth = (data['inno'][data['inno']['year'] == 2023]['num_patent_granted_field_all'].sum() / 
-                     data['inno'][data['inno']['year'] == 2022]['num_patent_granted_field_all'].sum() - 1) * 100
-        st.metric("YoY Patent Growth", f"{yoy_growth:.1f}%", "2022 → 2023")
+    
     
     st.markdown("""
     **Why This Matters:** Tracking innovation through patents and research affiliations helps us 
@@ -296,26 +245,13 @@ elif section == "Section 3: Innovation":
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
         "This stacked bar chart shows the number of AI-related patent applications and grants over time, indicating the rapid growth of AI intellectual property claims.",
-        reference="PatentsView database, WIPO statistics"
-    )
-    create_download_button(fig, "ai_patents_by_status")
+        reference="PatentsView database, WIPO statistics")
+
 
 elif section == "Section 4: Investment":
     st.header("Investment")
     
-    # Dynamic KPIs
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        total_invest = data['invest']['world'].sum() / 1e9
-        st.metric("Total AI Investment", f"${total_invest:.1f}B", "2017-2023")
-    with col2:
-        gen_ai_growth = (data['invest'][data['invest']['year'] == 2023]['generative_ai'].sum() / 
-                        data['invest'][data['invest']['year'] == 2022]['generative_ai'].sum() - 1) * 100
-        st.metric("Generative AI Growth", f"{gen_ai_growth:.1f}%", "2022 → 2023")
-    with col3:
-        us_vs_china = (data['invest'][data['invest']['year'] == 2023]['united_states'].sum() / 
-                      data['invest'][data['invest']['year'] == 2023]['china'].sum())
-        st.metric("US vs China Investment", f"{us_vs_china:.1f}x", "2023 ratio")
+    
     
     st.markdown("""
     **Why This Matters:** Investment patterns reveal which AI applications and regions are attracting 
@@ -355,27 +291,11 @@ elif section == "Section 4: Investment":
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
         "This line chart tracks private investment in AI by major geographic regions, showing the competitive landscape of AI funding.",
-        reference="Crunchbase data, CB Insights reports"
-    )
-    create_download_button(fig, "ai_investment_by_location")
+        reference="Crunchbase data, CB Insights reports")
 
 elif section == "Section 5: Public View":
     st.header("Public View")
     
-    # Dynamic KPIs
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        positive_view = data['public'][data['public']['opinion'] == "Mostly Helpful"]['opinion_percent'].mean()
-        st.metric("Positive Sentiment", f"{positive_view:.1f}%", "Global average")
-    with col2:
-        worried_work = data['public'][data['public']['opinion'] == "Very Worried"]['opinion_count'].sum() / data['public']['opinion_count'].sum() * 100
-        st.metric("Work Automation Concern", f"{worried_work:.1f}%", "Very worried")
-    with col3:
-        safety_gap = (data['public'][(data['public']['entity'] == "15-29 years") & 
-                               (data['public']['view'] == "Feel Safe")]['view_percent'].values[0] - 
-                    data['public'][(data['public']['entity'] == "65+ years") & 
-                             (data['public']['view'] == "Feel Safe")]['view_percent'].values[0])
-        st.metric("Age Safety Perception Gap", f"{safety_gap:.1f}pp", "Young vs Elderly")
     
     st.markdown("""
     **Why This Matters:** Public perception influences policy decisions, adoption rates, and the 
@@ -407,9 +327,7 @@ elif section == "Section 5: Public View":
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
         "This grouped bar chart shows how Americans' concerns about job automation vary by age group over time, revealing generational differences in AI anxiety.",
-        reference="Pew Research Center surveys"
-    )
-    create_download_button(fig, "automation_opinions_by_age")
+        reference="Pew Research Center surveys")
     
     # Mini-poll
     st.subheader("What's Your AI Opinion?")
