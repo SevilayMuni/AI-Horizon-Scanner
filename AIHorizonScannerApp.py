@@ -23,7 +23,7 @@ st.set_page_config(
 @st.cache_data
 def load_data():
     # These would be replaced with actual data loading
-    return {'dev': pd.read_parquet('./data/df_cost_hardware.parquet', engine = 'pyarrow'),
+    return {'dev': pd.read_parquet('./data/df_hardware.parquet', engine = 'pyarrow'),
             'geo': pd.read_parquet('./data/df_cumu.parquet', engine = 'pyarrow'),
             'inno': pd.read_parquet('./data/df_patent_world.parquet', engine = 'pyarrow'),
             'invest': pd.read_parquet('./data/df_investment.parquet', engine = 'pyarrow'),
@@ -208,15 +208,15 @@ elif section == "Section 3: Innovation":
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=data['inno']['year'], name="Granted",
-        y=data['inno']['num_patent_granted_field_all'],
-        text=data['inno']['num_patent_granted_field_all'],
+        y=data['inno']['num_patent_granted__field_all'],
+        text=data['inno']['num_patent_granted__field_all'],
         textfont=dict(size=10, weight='bold'),
         marker_color='rgb(97, 152, 142)'
     ))
     fig.add_trace(go.Bar(
         x=data['inno']['year'], name="Applied",
-        y=data['inno']['num_patent_applications_field_all'],
-        text=data['inno']['num_patent_applications_field_all'],
+        y=data['inno']['num_patent_applications__field_all'],
+        text=data['inno']['num_patent_applications__field_all'],
         textfont=dict(size=10, weight='bold'),
         marker_color='rgb(222, 143, 110)'
     ))
@@ -243,17 +243,17 @@ elif section == "Section 4: Investment":
     st.subheader("Annual Private Investment in AI by Location")
     fig = go.Figure()
     fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['China'],
+        x=data['invest']['year'], y=data['invest']['china'],
         name="China", mode='lines+markers', marker_color='rgb(150, 2, 0)',
         marker_size=8, opacity=0.7
     ))
     fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['United_states'],
+        x=data['invest']['year'], y=data['invest']['united_states'],
         name="United States", mode='lines+markers', marker_size=8,
         marker_color='rgb(225, 188, 41)', opacity=0.7
     ))
     fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['European_union_and_United_kingdom'],
+        x=data['invest']['year'], y=data['invest']['european_union_and_united_kingdom'],
         name="European Union & United Kingdom", mode='lines+markers',
         marker_color='rgb(36, 30, 78)', marker_size=8, opacity=0.7
     ))
