@@ -113,9 +113,17 @@ def show_explanation(explanation, reference=None):
         explanation_content = f"""
         <div class="chart-explanation">
             {explanation}
+        """
+        if reference:
+            explanation_content += f"""
+            <div class="reference-link">
+                <em>Reference: {reference}</em>
+            </div>
+            """
         explanation_content += "</div>"
         
         st.markdown(explanation_content, unsafe_allow_html=True)
+
 
 # Section content
 if section == "Section 1: AI Development":
