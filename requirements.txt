@@ -3,6 +3,3 @@ numpy
 pandas
 plotly
 datetime
-python-dateutil
-pyarrow
-io
