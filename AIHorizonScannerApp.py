@@ -338,9 +338,7 @@ elif section == "Section 5: Public View":
 
 elif section == "Comparison Tool":
     st.header("Comparison Tool")
-    st.markdown("""
-    Use this tool to compare different aspects of AI development across countries, domains, or time periods.
-    """)
+    st.markdown("Use this tool to compare different aspects of AI development across countries, domains, or time periods.")
     
     col1, col2 = st.columns(2)
     
