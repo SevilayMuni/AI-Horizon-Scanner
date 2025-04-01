@@ -140,9 +140,7 @@ if section == "Section 1: AI Development":
     col1, col2, col3 = st.columns(3)
     with col1:
         latest_cost = data['dev']['cost__inflation_adjusted'].max()
-        prev_cost = data['dev'][data['dev']['year'] == data['dev']['year'].max()-1]['cost__inflation_adjusted'].max()
-        delta_cost = (latest_cost - prev_cost)/prev_cost * 100
-        st.metric("Most Expensive System to Train", f"${latest_cost/1e6:.1f}M", f"{delta_cost:.1f}% YoY")
+        st.metric("Most Expensive System to Train", f"${latest_cost/1e6:.1f}M")
     with col2:
         avg_params = data['dev'].groupby('year')['parameters'].mean().iloc[-1]
         st.metric("Avg Parameters in New Systems", f"{avg_params/1e9:.1f}B", "Latest Year")
@@ -226,7 +224,7 @@ elif section == "Section 2: Geographic Distribution":
     
     fig = px.line(
         data['geo'], x="year", y="cumulative_count", color="entity",
-        marker=True, color_discrete_map=color_discrete_map,
+        markers=True, color_discrete_map=color_discrete_map,
         labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"},
         title="Cumulative Number of Large-Scale AI Systems by Country",
         width=1200, height=500
