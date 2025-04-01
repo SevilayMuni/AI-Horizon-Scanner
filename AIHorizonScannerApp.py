@@ -27,7 +27,7 @@ def load_data():
             'geo': pd.read_parquet('./data/df_cumu.parquet', engine = 'pyarrow'),
             'inno': pd.read_parquet('./data/df_patent_world.parquet', engine = 'pyarrow'),
             'invest': pd.read_parquet('./data/df_investment.parquet', engine = 'pyarrow'),
-            'public': pd.read_parquet('./data/df_view_country.parquet', engine = 'pyarrow')}
+            'public': pd.read_parquet('./data/df_automated_survey', engine = 'pyarrow')}
 
 data = load_data()
 
@@ -114,12 +114,6 @@ def show_explanation(explanation, reference=None):
         <div class="chart-explanation">
             {explanation}
         """
-        if reference:
-            explanation_content += f"""
-            <div class="reference-link">
-                <em>Reference: {reference}</em>
-            </div>
-            """
         explanation_content += "</div>"
         
         st.markdown(explanation_content, unsafe_allow_html=True)
@@ -131,7 +125,6 @@ if section == "Section 1: AI Development":
     
     
     # Cost to Train AI Systems Plot
-    st.subheader("Cost to Train AI Systems")
     color_discrete_map = {
         'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)', 
         'Vision & ImageGeneration': 'rgb(144,103,189)', 'Vision': 'rgb(64,89,173)', 
@@ -167,7 +160,6 @@ elif section == "Section 2: Geographic Distribution":
     st.header("Geographic Distribution")
     
     # Cumulative Number of Large-Scale AI Systems by Country
-    st.subheader("Cumulative Number of Large-Scale AI Systems by Country")
     color_discrete_map = {
         'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 
         'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 
@@ -204,7 +196,6 @@ elif section == "Section 3: Innovation":
     st.header("Innovation")
     
     # Worldwide AI Related Patent Applications by Status
-    st.subheader("Worldwide AI Related Patent Applications by Status")
     fig = go.Figure()
     fig.add_trace(go.Bar(
         x=data['inno']['year'], name="Granted",
@@ -240,7 +231,6 @@ elif section == "Section 4: Investment":
     st.header("Investment")
     
     # Annual Private Investment in AI by Location
-    st.subheader("Annual Private Investment in AI by Location")
     fig = go.Figure()
     fig.add_trace(go.Scatter(
         x=data['invest']['year'], y=data['invest']['china'],
@@ -276,10 +266,7 @@ elif section == "Section 4: Investment":
 
 elif section == "Section 5: Public View":
     st.header("Public View")
-    
-    
     # Americans Opinion About Their Work Being Automated
-    st.subheader("Americans Opinion About Their Work Being Automated")
     color_discrete_map = {
         "Don't Know": 'rgb(38, 45, 58)', "Worried": 'rgb(221, 96, 49)',
         "Not Worried": 'rgb(68, 114, 202)', "Very Worried": 'rgb(147, 3, 48)'
