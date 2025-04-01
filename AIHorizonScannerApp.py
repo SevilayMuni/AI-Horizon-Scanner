@@ -121,12 +121,6 @@ def show_explanation(explanation, reference=None):
 if section == "Section 1: AI Development":
     st.header("AI Development")
     
-   
-    
-    st.write(
-    **Why This Matters:** Understanding the resources required to develop AI systems helps us assess 
-    who can participate in AI development and how access to these technologies might be distributed.
-    """)
     
     # Cost to Train AI Systems Plot
     st.subheader("Cost to Train AI Systems")
