@@ -23,13 +23,11 @@ st.set_page_config(
 @st.cache_data
 def load_data():
     # These would be replaced with actual data loading
-    return {
-        'dev': pd.DataFrame(),       # For AI Development metrics
-        'geo': pd.DataFrame(),       # For Geographic Distribution
-        'inno': pd.DataFrame(),      # For Innovation metrics
-        'invest': pd.DataFrame(),    # For Investment metrics
-        'public': pd.DataFrame()     # For Public Perception
-    }
+    return {'dev': pd.read_parquet('./data/df_cost_hardware.parquet', engine = 'pyarrow'),
+            'geo': pd.read_parquet('./data/df_cumu.parquet', engine = 'pyarrow'),
+            'inno': pd.read_parquet('./data/df_patent_world.parquet', engine = 'pyarrow'),
+            'invest': pd.read_parquet('./data/df_investment.parquet', engine = 'pyarrow'),
+            'public': pd.read_parquet('./data/df_view_country.parquet', engine = 'pyarrow')}
 
 data = load_data()
 
