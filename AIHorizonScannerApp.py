@@ -87,12 +87,12 @@ with st.expander(f"📌 Weekly Spotlight (Week {current_week})", expanded=True):
 # Sidebar navigation
 st.sidebar.title("Navigation")
 section = st.sidebar.radio("Go to:", [
-    "Section 1: 🔧 AI Development",
-    "Section 2: 🌍 Geographic Distribution",
-    "Section 3: 💡 Innovation",
-    "Section 4: 💰 Investment",
-    "Section 5: 👥 Public View",
-    "🔍 Comparison Tool"])
+    "Section 1: AI Development",
+    "Section 2: Geographic Distribution",
+    "Section 3: Innovation",
+    "Section 4: Investment",
+    "Section 5: Public View",
+    "Comparison Tool"])
 
 # Helper functions
 def create_download_button(fig, filename):
