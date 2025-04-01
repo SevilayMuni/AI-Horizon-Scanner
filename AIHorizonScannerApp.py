@@ -139,8 +139,8 @@ if section == "Section 1: AI Development":
     # Dynamic KPIs
     col1, col2, col3 = st.columns(3)
     with col1:
-        latest_cost = data['dev']['cost_inflation_adjusted'].max()
-        prev_cost = data['dev'][data['dev']['year'] == data['dev']['year'].max()-1]['cost_inflation_adjusted'].max()
+        latest_cost = data['dev']['cost__inflation_adjusted'].max()
+        prev_cost = data['dev'][data['dev']['year'] == data['dev']['year'].max()-1]['cost__inflation_adjusted'].max()
         delta_cost = (latest_cost - prev_cost)/prev_cost * 100
         st.metric("Most Expensive System to Train", f"${latest_cost/1e6:.1f}M", f"{delta_cost:.1f}% YoY")
     with col2:
@@ -165,9 +165,9 @@ if section == "Section 1: AI Development":
     }
     
     fig = px.scatter(
-        data['dev'], x="day", y="cost_inflation_adjusted", color="domain",
+        data['dev'], x="day", y="cost__inflation_adjusted", color="domain",
         log_y=True, color_discrete_map=color_discrete_map,
-        labels={"cost_inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
+        labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
         title="Energy Cost to Train AI Systems",
         width=1200, height=500
     )
