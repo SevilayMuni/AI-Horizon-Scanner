@@ -1,0 +1,8 @@
+streamlit>=1.26.0
+numpy
+pandas
+plotly
+datetime
+python-dateutil
+pyarrow
+io
