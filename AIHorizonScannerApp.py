@@ -166,11 +166,6 @@ if section == "Section 1: AI Development":
 elif section == "Section 2: Geographic Distribution":
     st.header("Geographic Distribution")
     
-    
-    
-    st.markdown("Why This Matters: The geographic concentration of AI development affects global power dynamics 
-    and determines which cultural perspectives are embedded in these influential technologies.")
-    
     # Cumulative Number of Large-Scale AI Systems by Country
     st.subheader("Cumulative Number of Large-Scale AI Systems by Country")
     color_discrete_map = {
