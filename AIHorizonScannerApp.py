@@ -54,7 +54,7 @@ df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1
 def load_public_data():
     df_automated_survey = pd.read_parquet("./data/df_automated_survey.parquet", engine = 'pyarrow')
     df_view_country = pd.read_parquet("./data/df_view_country.parquet", engine = 'pyarrow')
-    df_view_continent21 = pd.read_parquet("./data/df_view_continent21.parquet", engine = 'pyarrow')
+    df_view_continent21 = pd.read_parquet("./data/df_view_continent2021.parquet", engine = 'pyarrow')
     df_view_gender = pd.read_parquet("./data/df_view_gender.parquet", engine = 'pyarrow')
     df_view3 = pd.read_parquet("./data/df_view3.parquet", engine = 'pyarrow')
     return df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3
