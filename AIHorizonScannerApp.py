@@ -11,15 +11,13 @@ from datetime import datetime
 import base6
 from io import BytesIO
 
-# ---------------------------------------------------------------------------------------------------------
-
 # Configure page
 st.set_page_config(
     page_title="Democratizing AI Development Knowledge",
     page_icon=":bar_chart:",
     layout="wide")
 
-# Load data (placeholder - replace with actual data loading)
+# Load data
 @st.cache_data
 def load_dev_data():
     df_hardware = pd.read_parquet("./data/df_hardware.parquet", engine = 'pyarrow')
@@ -64,7 +62,6 @@ def load_public_data():
     return df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3
 
 df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3 = load_public_data()
-
 
 # Custom CSS
 st.markdown("""
@@ -157,29 +154,25 @@ def show_explanation(explanation, reference=None):
 if section == "🔧 AI Development":
     st.header("🔧 AI Development")
     with st.expander(f"Why This Matters❓❓", expanded=False):
-    st.markdown("""**Understanding the resources required to develop AI systems helps us assess 
-    who can participate in AI development and how access to these technologies might be distributed.**""")
+        st.markdown("""**Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.**""")
     
     # Cost to Train AI Systems Plot
     color_discrete_map = {
         'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)', 
         'Vision & ImageGeneration': 'rgb(144,103,189)', 'Vision': 'rgb(64,89,173)', 
         'ImageGeneration': 'rgb(4,129,188)', 'Multimodal': 'rgb(163,59,32)', 
-        'Other': 'rgb(118,66,72)', 'Biology': 'rgb(12,206,187)', 'Games': 'rgb(242,158,76)'
-    }
+        'Other': 'rgb(118,66,72)', 'Biology': 'rgb(12,206,187)', 'Games': 'rgb(242,158,76)'}
     
     fig = px.scatter(
         df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',
         log_y=True, color_discrete_map=color_discrete_map,
         labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
         title="Energy Cost to Train AI Systems",
-        width=1200, height=500
-    )
+        width=1200, height=500)
     fig.update_traces(
         marker=dict(size=8, opacity=0.8, line=dict(width=0.5, color='black')),
         textposition="top center", showlegend=True,
-        textfont=dict(size=7, style="italic", color='black')
-    )
+        textfont=dict(size=7, style="italic", color='black'))
     fig.update_layout(
         xaxis_title="Year", legend_title="Domain", hovermode="closest",
         yaxis=dict(type="log", tickvals=[1e3, 1e4, 1e5, 1e6, 1e7], ticktext=["1K", "10K", "100K", "1M", "10M"]),
@@ -190,8 +183,59 @@ if section == "🔧 AI Development":
         "**Insight**: Training large language models like BLOOM-176B (901K) requires significantly more energy than game-playing AI like AlphaGo (471K), demonstrating how different AI domains have varying resource needs.",
         "**Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.",
         "**Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.")
-    
 
+    # 'Computation Used to Train AI Systems' Plot
+    tickvals = [10**i for i in range(-12, 11)]
+    color_discrete_map2={'Language': 'rgb(4, 139, 168)', 'Speech': 'rgb(242, 66, 54)', 'Vision': 'rgb(144, 103, 198)', 'Image Generation': 'rgb(98, 0, 179)',
+                         'Multiple Domains': 'rgb(240, 56, 107)', 'Other': 'rgb(118, 66, 72)','Biology': 'rgb(138, 155, 104)', 'Games': 'rgb(242, 158, 76)'}
+    fig2 = px.scatter(df_computation, x="day", y="training_computation_petaflop", color="domain", log_y=True, color_discrete_map=color_discrete_map2, 
+                      labels={"training_computation_petaflop": "Computation", "day": "Time", "entity": "AI System", "domain": "Domain"},
+                      title="Computation Used to Train AI Systems", width=1000, height=500)
+    fig2.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
+    # Improve layout
+    fig2.update_layout(yaxis=dict(type="log", tickvals=tickvals), xaxis_title="Year", yaxis_title="Training Computation (petaFLOP)", hovermode="closest", 
+                       legend_title="AI Domain", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.27)
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # 'Datapoints Used to Train AI Systems' Plot
+    tickvals3 = [10**i for i in range(1, 13)]
+    color_discrete_map3={'Language': 'rgb(4, 139, 168)', 'Speech': 'rgb(242, 66, 54)', 'Vision': 'rgb(144, 103, 198)', 'Image Generation': 'rgb(98, 0, 179)',
+                         'Multiple Domains': 'rgb(240, 56, 107)', 'Other': 'rgb(118, 66, 72)', 'Biology': 'rgb(138, 155, 104)', 'Games': 'rgb(242, 158, 76)'}
+    fig3 = px.scatter(df_datapoint, x="day", y="training_dataset_size__datapoints", color="domain", log_y=True, color_discrete_map=color_discrete_map3,
+                      labels={"training_dataset_size__datapoints": "Size", "day": "Time", "entity": "AI System", "domain": "Domain"}, 
+                      title="Datapoints Used to Train AI Systems", hover_data = ['entity', 'domain'], width=1000, height=500)
+    fig3.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
+    fig3.update_layout(yaxis=dict(type="log", tickvals=tickvals3), xaxis_title="Year", yaxis_title="Training Datapoints", legend_title="AI Domain", 
+                       hovermode="closest", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.28)
+    st.plotly_chart(fig3, use_container_width=True)
+
+    # 'Number of Parameter Used to Train AI' Plot
+    tickvals4 = [10**i for i in range(1, 13)]
+    color_discrete_map4={'Academia & Industry Collab': 'rgb(179, 136, 235)', 'Industry': 'rgb(255, 90, 95)', 'Other': 'rgb(52, 46, 55)', 'Academia': 'rgb(8, 126, 139)'}
+    fig4 = px.scatter(df_parameter, x="day", y="parameters", color="organization_categorization", log_y=True, title="Number of Parameter Used to Train AI",
+                      labels={"parameters": "Parameters", "day": "Time", "entity": "AI System", "organization_categorization": "Organization"}, 
+                      hover_data = ['entity', 'organization_categorization'], width=1000, height=500, color_discrete_map=color_discrete_map4)
+    fig4.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
+    fig4.update_layout(yaxis=dict(type="log", tickvals=tickvals4), xaxis_title="Year", yaxis_title="Number of Adjusted Parameters", hovermode="closest",
+                      legend_title="Organization", margin=dict(l=5, r=5, t=35, b=5), title_x=0.21, plot_bgcolor='rgba(240, 247, 244, 0.5)')
+    st.plotly_chart(fig4, use_container_width=True)
+
+    # 'Training Computation vs. Parameters in AI Systems by Organization' Plot
+    ytickvals = [10**i for i in range(-12, 11)]
+    xtickvals = [10**i for i in range(1, 13)]
+    color_discrete_map5={'Academia & Industry Collab': 'rgb(179, 136, 235)', 'Other': 'rgb(52, 46, 55)', 'Industry': 'rgb(255, 90, 95)', 'Academia': 'rgb(8, 126, 139)'}
+    fig5 = px.scatter(df_cost_hardware, x="parameters", y="training_computation_petaflop", color="organization_categorization", log_y=True,
+                      labels={"parameters": "Parameters", "training_computation_petaflop": "Computation", "entity": "AI System", "organization_categorization": "Organization"},
+                      title="Training Computation vs. Parameters in AI Systems by Organization", hover_data = ['entity', 'organization_categorization'], 
+                      width=1000, height=500, color_discrete_map=color_discrete_map5)
+    fig5.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')),textposition="top center", showlegend=True,textfont=dict(size=9, style="italic"))
+    fig5.update_layout(yaxis=dict(type="log", tickvals = ytickvals), xaxis_title="Number of Adjusted Parameters", xaxis=dict(type="log", tickvals = xtickvals),
+                       yaxis_title="Training Computation (petaFLOP)", legend_title="Organization", hovermode="closest", margin=dict(l=5, r=5, t=35, b=5), title_x=0.12, plot_bgcolor='rgba(240, 247, 244, 0.5)')
+    st.plotly_chart(fig5, use_container_width=True)
+
+
+
+# ---------------------------------------------------------------------------------------------------------
 elif section == "Section 2: Geographic Distribution":
     st.header("Geographic Distribution")
     
