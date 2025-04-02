@@ -8,8 +8,6 @@ from PIL import Image
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime
-import base6
-from io import BytesIO
 
 # Configure page
 st.set_page_config(
