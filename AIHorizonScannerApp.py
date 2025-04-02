@@ -61,47 +61,6 @@ def load_public_data():
 
 df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3 = load_public_data()
 
-# Custom CSS
-st.markdown("""
-    <style>
-    .kpi-box {
-        border-radius: 5px;
-        padding: 15px;
-        background-color: #f8f9fa;
-        margin-bottom: 20px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .kpi-title {
-        font-size: 14px;
-        color: #6c757d;
-        margin-bottom: 5px;
-    }
-    .kpi-value {
-        font-size: 24px;
-        font-weight: bold;
-        color: #343a40;
-    }
-    .chart-explanation {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin-top: 10px;
-        border-left: 4px solid #3498db;
-    }
-    .section-header {
-        color: #2c3e50;
-        border-bottom: 2px solid #3498db;
-        padding-bottom: 5px;
-        margin-top: 20px;
-    }
-    .reference-link {
-        font-size: 0.8em;
-        color: #6c757d;
-        margin-top: 5px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
-
 # Header
 st.title("AI Horizon Scanner App")
 st.subheader("Democratizing AI Development Knowledge")
@@ -236,48 +195,63 @@ elif section == "🌍 Geographic Distribution":
                            'Singapore': 'rgb(249, 220, 92)', 'South Korea': 'rgb(297, 40, 61)', 'United Arab Emirates': 'rgb(183, 181, 179)', 'United Kingdom': 'rgb(237, 174, 73)', 'United States': 'rgb(184, 12, 9)'}
     
     fig6 = px.line(df_cumulative, x="year", y="cumulative_count", color="entity", markers=True, color_discrete_map=color_discrete_map6, 
-                   labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=1200, height=500)
+                   labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=1000, height=400)
     fig6.update_traces(text=df_cumulative["entity"] + ": " + df_cumulative["cumulative_count"].astype(str), hoverinfo="text+name", 
                        marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black')))
     fig6.update_layout(xaxis=dict(tickmode="linear", dtick=10), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.17, 
                        margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(229, 231, 230, 0.5)')
     st.plotly_chart(fig6, use_container_width=True)
 
-elif section == "Section 3: Innovation":
-    st.header("Innovation")
+    # World Map for 'Country-Wise AI-Related Total Patent Applications by 2024'
+    fig7 = px.choropleth(df_patent_agg, locations='entity', locationmode="country names", color="num_patent_applications__field_all", hover_name=None, 
+                         hover_data={"num_patent_applications__field_all": True}, color_continuous_scale="Viridis_r", width=800, height=400, 
+                         labels={"entity": "Country", "num_patent_applications__field_all": "Application Count"}, title="Country-Wise AI-Related Total Patent Applications by 2024")
+    fig7.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.16, margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
+    st.plotly_chart(fig7, use_container_width=True)
+
+    # World Map for 'AI-Related Passed Bill into Law by Country'
+    fig8 = px.choropleth(df_bill, locations='entity', locationmode="country names", color="number_of_ai_related_bills_passed_into_law", 
+                         hover_data={"number_of_ai_related_bills_passed_into_law": True}, hover_name=None, color_continuous_scale="Inferno_r", 
+                         labels={"entity": "Country", "number_of_ai_related_bills_passed_into_law": "Passed Bill Count"}, title="AI-Related Passed Bill into Law by Country", width=800, height=400)
+    fig8.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.22, margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
+    st.plotly_chart(fig8, use_container_width=True)
+
+# ---------------------------------------------------------------------------------------------------------
+elif section == "💡 Innovation":
+    st.header("💡 Innovation Interactive Plots")
+
+    # 'Affiliation of Research Teams Building AI systems' Plot
+    color_discrete_map9={'Academia': 'rgb(238, 99, 82)', 'Industry': 'rgb(121, 132, 120)', 'Academia & Industry Collab': 'rgb(76, 134, 168)', 'Other': 'rgb(170, 109, 163)'}
+    fig9 = px.bar(df_affiliation, x="year", y="yearly_count", color="entity", text_auto=False, color_discrete_map = color_discrete_map9, 
+                  labels={"entity": "Sector", "year": "Year", "yearly_count": "Count"}, title="Affiliation of Research Teams Building AI systems", width=1000, height=400)
+    fig9.update_traces(hoverinfo="text+name")
+    fig9.update_layout(barmode="stack", yaxis=dict(title="Count"), xaxis=dict(title = "Publication Year", tickmode="linear", dtick=1, tickangle=-45), legend_title="Sector", 
+                       hovermode="x unified", title_x = 0.2, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
+    st.plotly_chart(fig9, use_container_width=True)
     
     # Worldwide AI Related Patent Applications by Status
-    fig = go.Figure()
-    fig.add_trace(go.Bar(
-        x=data['inno']['year'], name="Granted",
-        y=data['inno']['num_patent_granted__field_all'],
-        text=data['inno']['num_patent_granted__field_all'],
-        textfont=dict(size=10, weight='bold'),
-        marker_color='rgb(97, 152, 142)'
-    ))
-    fig.add_trace(go.Bar(
-        x=data['inno']['year'], name="Applied",
-        y=data['inno']['num_patent_applications__field_all'],
-        text=data['inno']['num_patent_applications__field_all'],
-        textfont=dict(size=10, weight='bold'),
-        marker_color='rgb(222, 143, 110)'
-    ))
-    fig.update_traces(
-        hoverinfo="text+name", marker=dict(opacity=0.8)
-    )
-    fig.update_layout(
-        barmode="stack", yaxis=dict(title="Patent Count"),
-        xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0),
-        legend_title="Status", hovermode="x unified", width=1200, height=500,
-        margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)',
-        title="Worldwide AI Related Patent Applications by Status", title_x=0.25
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    show_explanation(
-        "This stacked bar chart shows the number of AI-related patent applications and grants over time, indicating the rapid growth of AI intellectual property claims.",
-        reference="PatentsView database, WIPO statistics")
+    fig10 = go.Figure()
+    fig10.add_trace(go.Bar(x=df_patent_world['year'], name="Granted", y=df_patent_world['num_patent_granted__field_all'], text=df_patent_world['num_patent_granted__field_all'],
+                           textfont=dict(size=10, weight='bold'), marker_color='rgb(97, 152, 142)'))
+    fig10.add_trace(go.Bar(x=df_patent_world['year'], name="Applied", y=df_patent_world['num_patent_applications__field_all'],
+                           text=df_patent_world['num_patent_applications__field_all'], textfont=dict(size=10, weight='bold'), marker_color='rgb(222, 143, 110)'))
+    fig10.update_traces(hoverinfo="text+name", marker=dict(opacity=0.8))
+    fig10.update_layout(barmode="stack", yaxis=dict(title="Patent Count"), xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), legend_title="Status", 
+                        hovermode="x unified", width=1000, height=400, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', title="Worldwide AI Related Patent Applications by Status", title_x=0.25)
+    st.plotly_chart(fig10, use_container_width=True)
 
+    # 'Worldwide Annual Granted AI Related Patents by Industry' Plot
+    color_discrete_map11={'Banking & Finance': 'rgb(18, 19, 15)', 'Industry & Manufacturing': 'rgb(214, 143, 214)', 'Energy & Management': 'rgb(214, 69, 80)', 
+                          'Business': 'rgb(119, 133, 172)', 'Security': 'rgb(139, 93, 51)', 'Life Sciences': 'rgb(134, 157, 122)', 'Transportation': 'rgb(255, 133, 82)', 
+                          'Physical Sciences & Engineering': 'rgb(60, 79, 118)','Telecommunication': 'rgb(127, 5, 95)', 'Personal Devices & Computing': 'rgb(11, 122, 117)'}
+    fig11 = px.bar(df_patent_world2, x="year", y="patent_count", color="industry", text_auto=False, color_discrete_map = color_discrete_map11,
+                   labels={"industry": "Industry", "year": "Year", "patent_count": "Patent Count"}, title="Worldwide Annual Granted AI Related Patents by Industry", width=1000, height=400)
+    fig11.update_traces(hoverinfo="text+name")
+    fig11.update_layout(barmode="stack", xaxis=dict(title = "Year", tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Granted Patent Count"), 
+                        legend_title="Industry", title_x=0.17, margin=dict(l=100, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
+    st.plotly_chart(fig11, use_container_width=True)
 
+# ---------------------------------------------------------------------------------------------------------
 elif section == "Section 4: Investment":
     st.header("Investment")
     
