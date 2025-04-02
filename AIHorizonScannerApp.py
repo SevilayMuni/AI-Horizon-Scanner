@@ -178,9 +178,7 @@ if section == "🔧 AI Development":
         margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)')
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
-        "**Insight**: Training large language models like BLOOM-176B (901K) requires significantly more energy than game-playing AI like AlphaGo (471K), demonstrating how different AI domains have varying resource needs.",
-        "**Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.",
-        "**Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.")
+        "**Insight**: Training large language models like BLOOM-176B (901K) requires significantly more energy than game-playing AI like AlphaGo (471K), demonstrating how different AI domains have varying resource needs. **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train. **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.")
 
     # 'Computation Used to Train AI Systems' Plot
     tickvals = [10**i for i in range(-12, 11)]
