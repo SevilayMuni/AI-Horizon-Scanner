@@ -49,6 +49,8 @@ def load_inno_invest_data():
     return df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3
 
 df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3 = load_inno_invest_data()
+df_view_gender19 = df_view_gender[df_view_gender['year'] == 2019]
+df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
 @st.cache_data
 def load_public_data():
@@ -84,28 +86,15 @@ section = st.sidebar.radio("Go to:", [
     "👥 Public View",
     "🔍 Comparison Tool"])
 
-def show_explanation(explanation, reference=None):
-    # Create a unique key for this explanation section
-    explanation_key = f"explanation_{hash(explanation)}"
-    
-    # Check if explanation should be shown (stored in session state)
-    if explanation_key not in st.session_state:
-        st.session_state[explanation_key] = False
-    
-    # Toggle button
-    if st.button("Explain This Chart ▲" if st.session_state[explanation_key] else "Explain This Chart ▼", 
-                key=f"btn_{explanation_key}"):
-        st.session_state[explanation_key] = not st.session_state[explanation_key]
-    
-    # Show explanation if toggled on
-    if st.session_state[explanation_key]:
-        explanation_content = f"""
-        <div class="chart-explanation">
-            {explanation}
-        """
-        explanation_content += "</div>"
-        
-        st.markdown(explanation_content, unsafe_allow_html=True)
+# Helper Functions
+# Define function to number formating
+def format_investment(value):
+    if value >= 1e9:
+        return f'{round(value / 1e9, 2)}B'
+    elif value >= 1e6:
+        return f'{round(value / 1e6, 2)}M'
+    else:
+        return str(value)
 
 # Section content
 if section == "🔧 AI Development":
@@ -252,86 +241,118 @@ elif section == "💡 Innovation":
     st.plotly_chart(fig11, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
-elif section == "Section 4: Investment":
-    st.header("Investment")
+elif section == "💵 Investment":
+    st.header("💵 Investment Interactive Plots")
     
     # Annual Private Investment in AI by Location
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['china'],
-        name="China", mode='lines+markers', marker_color='rgb(150, 2, 0)',
-        marker_size=8, opacity=0.7
-    ))
-    fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['united_states'],
-        name="United States", mode='lines+markers', marker_size=8,
-        marker_color='rgb(225, 188, 41)', opacity=0.7
-    ))
-    fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['european_union_and_united_kingdom'],
-        name="European Union & United Kingdom", mode='lines+markers',
-        marker_color='rgb(36, 30, 78)', marker_size=8, opacity=0.7
-    ))
-    fig.add_trace(go.Scatter(
-        x=data['invest']['year'], y=data['invest']['world'],
-        name="World", mode='lines+markers', marker_size=8,
-        marker_color='rgb(63, 124, 172)', opacity=0.7
-    ))
-    fig.update_layout(
-        xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0),
-        yaxis=dict(title="Private Investment (USD)"), legend_title="Location",
-        margin=dict(l=5, r=5, t=35, b=5, pad=5), hovermode="x unified",
-        title="Annual Private Investment in AI by Location", title_x=0.2,
-        plot_bgcolor='rgba(248, 247, 255, 0.7)', width=1200, height=500
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    show_explanation(
-        "This line chart tracks private investment in AI by major geographic regions, showing the competitive landscape of AI funding.",
-        reference="Crunchbase data, CB Insights reports")
+    fig12 = go.Figure()
+    fig12.add_trace(go.Scatter(x=df_investment['year'], y=df_investment['china'], name='China', mode='lines+markers', marker_color='rgb(150, 2, 0)', marker_size = 8, opacity=0.7))
+    fig12.add_trace(go.Scatter(x=df_investment['year'], y=df_investment['united_states'], name='United States', mode='lines+markers', marker_size = 8, marker_color='rgb(225, 188, 41)', opacity=0.7))
+    fig12.add_trace(go.Scatter(x=df_investment['year'], y=df_investment['european_union_and_united_kingdom'], name='European Union & United Kingdom', mode='lines+markers', 
+                               marker_color='rgb(36, 30, 78)', marker_size = 8, opacity=0.7))
+    fig12.add_trace(go.Scatter(x=df_investment['year'], y=df_investment['world'],name='World', mode='lines+markers', marker_size = 8,marker_color='rgb(63, 124, 172)', opacity=0.7))
+    fig12.update_layout(xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Private Investment (USD)"), legend_title="Location",
+                        margin=dict(l=5, r=5, t=35, b=5, pad=5), hovermode="x unified", title="Annual Private Investment in AI by Location", title_x = 0.2, 
+                        plot_bgcolor = 'rgba(248, 247, 255, 0.7)', width=900, height=400)
+    st.plotly_chart(fig12, use_container_width=True)
 
-elif section == "Section 5: Public View":
-    st.header("Public View")
-    # Americans Opinion About Their Work Being Automated
-    color_discrete_map = {
-        "Don't Know": 'rgb(38, 45, 58)', "Worried": 'rgb(221, 96, 49)',
-        "Not Worried": 'rgb(68, 114, 202)', "Very Worried": 'rgb(147, 3, 48)'
-    }
-    
-    fig = px.bar(
-        data['public'], x="year", y="opinion_count", color='opinion',
-        barmode='stack', facet_col='entity', color_discrete_map=color_discrete_map,
-        labels={'entity': 'Age Group', 'opinion': 'Opinion', 'year': 'Year', 'opinion_count': 'Count'}
-    )
-    fig.update_traces(
-        marker_line_color='rgb(66, 68, 60)',
-        marker_line_width=1.5, marker_opacity=0.8
-    )
-    fig.update_layout(
-        title_text='Americans Opinion About Their Work Being Automated',
-        xaxis_title='Year', yaxis_title='Opinion Count',
-        legend_title="Opinion", width=1200, height=500,
-        plot_bgcolor='rgb(258, 249, 248)'
-    )
-    st.plotly_chart(fig, use_container_width=True)
-    show_explanation(
-        "This grouped bar chart shows how Americans' concerns about job automation vary by age group over time, revealing generational differences in AI anxiety.",
-        reference="Pew Research Center surveys")
-    
+    # 'Worldwide Annual Private Investment in AI by Domain' Plot
+    color_discrete_map13={'Insurance Tech': 'rgb(128, 94, 115)', 'Marketing & Digital Ads': 'rgb(255, 93, 115)', 'Manufacturing': 'rgb(45, 70, 84)', 'Creative Content': 'rgb(183, 68, 184)',
+                          'Educational Tech': 'rgb(96, 147, 93)','Energy Industry': 'rgb(198, 202, 83)','Medical & Healthcare': 'rgb(170, 80, 66)', 'Retail': 'rgb(243, 156, 107)'}
+    fig13 = px.line(df_investment1, x="year", y="world", color="entity", markers=True, labels={"entity":"Domain","year": "Year", "world": "Private Investment"}, 
+                    title="Worldwide Annual Private Investment in AI by Domain", width=900, height=400, color_discrete_map = color_discrete_map13)
+    fig13.update_traces(text=df_investment1["entity"]+ ": " + df_investment1["world"].astype(str), hoverinfo="text+name")
+    fig13.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')))
+    fig13.update_layout(xaxis=dict(tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Private Investment (USD)"), title_x = 0.195, legend_title="Domain", 
+                        margin=dict(l=5, r=5, t=35, b=5, pad=5), hovermode="closest", plot_bgcolor = 'rgba(248, 247, 255, 0.7)')
+    st.plotly_chart(fig13, use_container_width=True)
+
+    # 'Worldwide Annual Private Investment in AI by Domain' Second Plot
+    color_discrete_map14={'AI Infrastructure & Governance': 'rgb(74, 13, 103)', 'Hardware': 'rgb(198, 202, 83)','Augmented & Virtual Reality': 'rgb(104, 216, 155)',
+                          'Autonomous Vehicles': 'rgb(255, 127, 17)', 'Quantum Computing': 'rgb(99, 105, 209)','Cybersecurity & Data Protection': 'rgb(59, 65, 60)',
+                          'Data Management & Processing': 'rgb(0, 175, 185)','Facial Recognition': 'rgb(214, 69, 80)', 'NLP & Customer Support': 'rgb(227, 101, 193)'}
+    fig14 = px.line(df_investment2, x="year", y="world", color="entity", markers=True, labels={"entity":"Domain","year": "Year", "world": "Private Investment"},
+                    title="Worldwide Annual Private Investment in AI by Domain", width=900, height=400, color_discrete_map = color_discrete_map14)
+    fig14.update_traces(text=df_investment2["entity"]+ ": " + df_investment2["world"].astype(str), hoverinfo="text+name", 
+                        marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')))
+    fig14.update_layout(xaxis=dict(tickmode="linear", dtick=1, tickangle=0), title_x = 0.157, yaxis=dict(title="Private Investment (USD)"), hovermode="closest",
+                        legend_title="Domain", margin=dict(l=5, r=5, t=35, b=5, pad=5),plot_bgcolor='rgba(248, 247, 255, 0.7)')
+    st.plotly_chart(fig14, use_container_width=True)
+
+
+    # 'Worldwide Private Investment in Generative AI' Bar Plot
+    fig15 = px.bar(df_investment3, x="year", y="generative_ai",labels={"year": "Year", "generative_ai": "Amount($)"}, title="Worldwide Private Investment in Generative AI", width=900, height=400)
+    fig15.update_traces(text=df_investment3['generative_ai'].apply(format_investment),textfont_size=12.5, textfont_weight='bold', textangle=0,textfont_color='rgb(60, 60, 60)', 
+                        textposition="outside",hoverinfo="text", marker_color='rgb(255, 90, 95)', marker_opacity=0.7,marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5)
+    fig15.update_layout(xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0),yaxis=dict(title="Private Investment (USD)"), title_x = 0.51,
+                        margin=dict(l=0, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(248, 247, 255, 0.7)')
+    st.plotly_chart(fig15, use_container_width=True)
+
+# ---------------------------------------------------------------------------------------------------------
+elif section == "👥 Public View":
     # Mini-poll
     st.subheader("What's Your AI Opinion?")
     with st.form("ai_opinion_poll"):
-        opinion = st.radio(
-            "How do you think AI will impact society in the next 20 years?",
-            ["Mostly helpful", "Mostly harmful", "Both equally", "Not sure"]
-        )
-        age_group = st.selectbox(
-            "Your age group",
-            ["Under 30", "30-49", "50-64", "65+"]
-        )
+        opinion = st.radio("How do you think AI will impact society in the next 20 years?", ["Mostly helpful", "Mostly harmful", "Both equally", "Not sure"])
+        age_group = st.selectbox("Your age group", ["Under 30", "30-49", "50-64", "65+"])
         submitted = st.form_submit_button("Submit")
         if submitted:
             st.success("Thanks for sharing your opinion!")
+    
+    st.header("👥 Public View Interactive Plots")
+    # Americans Opinion About Their Work Being Automated
+    color_discrete_map16={"Don't Know": "rgb(58, 45, 50)", "Worried": "rgb(221, 96, 49)", "Not Worried": "rgb(68, 114, 202)", "Very Worried": "rgb(147, 3, 46)"}
+    fig16 = px.bar(df_automated_survey, x='year', y='opinion_count', color='opinion', barmode='stack', facet_col='entity', color_discrete_map = color_discrete_map16,
+                   labels = {'entity': 'Age Group', 'opinion': 'Opinion', 'year': 'Year','opinion_count': 'Count'})
+    fig16.update_traces(marker_line_color='rgb(60, 60, 60)',marker_line_width = 1.5, marker_opacity=0.8)
+    fig16.update_layout(title_text='Americans Opinion About Their Work Being Automated',xaxis_title='Year', yaxis_title='Opinion Count',legend_title='Opinion', 
+                        width = 1000, height = 450, plot_bgcolor='rgb(250, 249, 249)')
+    st.plotly_chart(fig16, use_container_width=True)
 
+    # 'Views on AI's Societal Impact in Next 20 Years by Country' Stacked Bar Plot
+    color_discrete_map17 = {'Mostly Helpful':'rgb(0, 127, 255)', 'No Opinion':'rgb(128, 138, 159)','Mostly Harmful':'rgb(196, 32, 33)', 'Neither':'rgb(213, 137, 54)'}
+    fig17 = px.bar(df_view_country, x='opinion_percent', y='entity', color='opinion', color_discrete_map = color_discrete_map17, barmode='stack',
+                   labels = {'entity': 'Country', 'opinion': 'Opinion', 'year': 'Year', 'opinion_percent': 'Percentage'})
+    fig17.update_traces(texttemplate='%{x:.1f}%', textposition='inside', textfont = dict(size = 10.5, weight = 'bold'), marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5, marker_opacity=0.7)
+    fig17.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Country", title_x=0.165, xaxis_title = '',yaxis_title='',legend_title='Opinion',
+                        margin=dict(l=100, r=5, t=35, b=5, pad=5), width=900, height=400, plot_bgcolor='rgb(250, 249, 249)')
+    st.plotly_chart(fig17, use_container_width=True)
+
+    # 'Views on AI's Societal Impact in Next 20 Years by Region' Plot
+    color_discrete_map18 = {'Mostly Helpful':'rgb(14, 177, 210)', 'No Opinion':'rgb(66, 75, 84)','Mostly Harmful':'rgb(255, 0, 53)', 'Neither':'rgb(206, 141, 102)'}
+    fig18 = px.bar(df_view_continent21, x='opinion_percent', y='entity', color='opinion', color_discrete_map= color_discrete_map18, barmode='stack',
+                   labels = {'entity': 'Country', 'opinion': 'Opinion', 'year': 'Year', 'opinion_percent': 'Percentage'})
+    fig18.update_traces(texttemplate='%{x:.1f}%', textposition='inside',textfont = dict(size = 10.5, weight = 'bold'),marker_line_color='rgb(60, 60, 60)',marker_line_width=1.5, marker_opacity=0.8)
+    fig18.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Region",title_x=0.21, xaxis_title = '',yaxis_title='',legend_title='Opinion',
+                        margin=dict(l=100, r=5, t=35, b=5, pad=5),width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
+    st.plotly_chart(fig18, use_container_width=True)
+
+    # 'Male/Female Views on AI's Societal Impact' Sunburst Charts
+    color_discrete_map19 = {'Mostly Helpful': 'rgb(64, 71, 109)', 'No Opinion': 'rgb(172, 190, 163)','Mostly Harmful': 'rgb(242, 71, 48)', 'Neither': 'rgb(189, 160, 188)'}
+    fig19 = make_subplots(rows=1, cols=2, specs=[[{'type': 'domain'}, {'type': 'domain'}]],subplot_titles=("Male/Female Views on AI's Societal Impact (2019)","Male/Female Views on AI's Societal Impact (2021)"))
+    sunburst1 = px.sunburst(df_view_gender19, path=['entity', 'opinion'], color='opinion', values='opinion_percent',color_discrete_map=color_discrete_map19,
+                            custom_data=['entity', 'opinion', 'opinion_percent'],hover_data=['entity', 'opinion', 'opinion_percent'])
+    sunburst2 = px.sunburst(df_view_gender21, path=['entity', 'opinion'], color='opinion', values='opinion_percent', color_discrete_map=color_discrete_map19,
+                            custom_data=['entity', 'opinion', 'opinion_percent'], hover_data=['entity', 'opinion', 'opinion_percent'])
+    fig19.add_trace(sunburst1.data[0], row=1, col=1)
+    fig19.add_trace(sunburst2.data[0], row=1, col=2)
+    fig19.update_traces(hovertemplate='<b>%{label}</b><br>Value: %{value}<br>Gender: %{customdata[0]}', texttemplate='%{label}<br>%{percentEntry:.1%}',
+                        insidetextorientation='auto', textfont=dict(size=12.5))
+    fig19.update_layout(margin=dict(t=50, l=30, r=0, b=0), plot_bgcolor='rgb(14, 177, 210)', width = 900, height = 450)
+    st.plotly_chart(fig19, use_container_width=True)
+
+    # 'Global Views on Self-Driving Cars by Demographic Group (2021)' Plot
+    color_discrete_map20={'Feel Safe': 'rgb(23, 190, 187)', 'Not Feel Safe': 'rgb(255, 49, 46)',"Don't Know": 'rgb(242, 187, 5)', 'No Response': 'rgb(34, 12, 16)'}
+    fig20 = px.bar(df_view3, y="entity", x="view_percent", color="view", text_auto=False,labels={"view": "View", "entity": "Group", "view_percent": "Percent"},
+                   title="Global Views on Self-Driving Cars by Demographic Group (2021)", width=900, height=400, color_discrete_map = color_discrete_map20)
+    fig20.update_traces(hoverinfo="text+name", texttemplate='%{x:.0f}%', textposition='inside',textfont = dict(size = 10.5, weight = 'bold'),
+                        marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5, marker_opacity=0.8)
+    fig20.update_layout(barmode="stack", xaxis=dict(title = "", tickmode="linear", dtick=10, tickangle=0), title_x = 0.135, 
+                        yaxis={'categoryorder': 'array', 'categoryarray': ['65+ years', '50-64 years', '30-49 years', '15-29 years', 'Poorest 20%', 'Richest 20%']},
+                        yaxis_title="", legend_title="View", margin=dict(l=100, r=5, t=35, b=5, pad=5), width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
+    st.plotly_chart(fig20, use_container_width=True)
+
+# ---------------------------------------------------------------------------------------------------------
 elif section == "Comparison Tool":
     st.header("Comparison Tool")
     st.markdown("Use this tool to compare different aspects of AI development across countries, domains, or time periods.")
@@ -341,14 +362,12 @@ elif section == "Comparison Tool":
     with col1:
         comparison_type = st.selectbox(
             "Compare by:",
-            ["Country", "Domain", "Organization Type"]
-        )
+            ["Country", "Domain", "Organization Type"])
     
     with col2:
         metric = st.selectbox(
             "Metric:",
-            ["Investment", "Patents", "System Count", "Training Cost"]
-        )
+            ["Investment", "Patents", "System Count", "Training Cost"])
     
     if st.button("Generate Comparison"):
         # Placeholder for comparison logic
@@ -359,9 +378,9 @@ elif section == "Comparison Tool":
             x=["USA", "China", "EU", "Other"],
             y=[45, 38, 12, 5],
             labels={'x': 'Region', 'y': f'{metric} (Billions)'},
-            title=f"{metric} Comparison by {comparison_type}"
-        )
+            title=f"{metric} Comparison by {comparison_type}")
         st.plotly_chart(fig, use_container_width=True)
 
 # Footer
 st.markdown("---")
+st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
