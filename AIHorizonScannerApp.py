@@ -98,31 +98,20 @@ def format_investment(value):
 
 # Section content
 if section == "🔧 AI Development":
-    st.header("🔧 AI Development Interactive Plots")
+    st.subheader("🔧 AI Development Interactive Plots")
     with st.expander(f"Why This Matters❓❓", expanded=False):
         st.markdown("""**Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.**""")
     
     # Cost to Train AI Systems Plot
-    color_discrete_map = {
-        'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)', 
-        'Vision & ImageGeneration': 'rgb(144,103,189)', 'Vision': 'rgb(64,89,173)', 
-        'ImageGeneration': 'rgb(4,129,188)', 'Multimodal': 'rgb(163,59,32)', 
-        'Other': 'rgb(118,66,72)', 'Biology': 'rgb(12,206,187)', 'Games': 'rgb(242,158,76)'}
-    fig = px.scatter(
-        df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',
-        log_y=True, color_discrete_map=color_discrete_map,
-        labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
-        title="Energy Cost to Train AI Systems",
-        width=1200, height=500)
-    fig.update_traces(
-        marker=dict(size=8, opacity=0.8, line=dict(width=0.5, color='black')),
-        textposition="top center", showlegend=True,
-        textfont=dict(size=7, style="italic", color='black'))
-    fig.update_layout(
-        xaxis_title="Year", legend_title="Domain", hovermode="closest",
-        yaxis=dict(type="log", tickvals=[1e3, 1e4, 1e5, 1e6, 1e7], ticktext=["1K", "10K", "100K", "1M", "10M"]),
-        yaxis_title="Cost ($, inflation adjusted)", title_x=0.3,
-        margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)')
+    color_discrete_map = {'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)','Vision & ImageGeneration': 'rgb(144,103,189)','Vision': 'rgb(64,89,173)', 
+                          'ImageGeneration': 'rgb(4,129,188)','Multimodal': 'rgb(163,59,32)','Other': 'rgb(118,66,72)','Biology': 'rgb(12,206,187)','Games': 'rgb(242,158,76)'}
+    fig = px.scatter(df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',log_y=True, color_discrete_map=color_discrete_map,
+                     labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
+                     title="Energy Cost to Train AI Systems", width=1000, height=500)
+    fig.update_traces(marker=dict(size=8, opacity=0.8, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, 
+                      textfont=dict(size=7, style="italic", color='black'))
+    fig.update_layout(xaxis_title="Year", legend_title="Domain", hovermode="closest", yaxis=dict(type="log", tickvals=[1e3, 1e4, 1e5, 1e6, 1e7], ticktext=["1K", "10K", "100K", "1M", "10M"]), 
+                      yaxis_title="Cost ($, inflation adjusted)", title_x=0.3, margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)')
     st.plotly_chart(fig, use_container_width=True)
 
     # 'Computation Used to Train AI Systems' Plot
@@ -133,7 +122,6 @@ if section == "🔧 AI Development":
                       labels={"training_computation_petaflop": "Computation", "day": "Time", "entity": "AI System", "domain": "Domain"},
                       title="Computation Used to Train AI Systems", width=1000, height=500)
     fig2.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
-    # Improve layout
     fig2.update_layout(yaxis=dict(type="log", tickvals=tickvals), xaxis_title="Year", yaxis_title="Training Computation (petaFLOP)", hovermode="closest", 
                        legend_title="AI Domain", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.27)
     st.plotly_chart(fig2, use_container_width=True)
@@ -176,7 +164,7 @@ if section == "🔧 AI Development":
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🌍 Geographic Distribution":
-    st.header("🌍 Geographic Distribution Interactive Plots")
+    st.subheader("🌍 Geographic Distribution Interactive Plots")
     
     # Cumulative Number of Large-Scale AI Systems by Country
     color_discrete_map6 = {'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 'Germany': 'rgb(252, 100, 113)', 
@@ -207,7 +195,7 @@ elif section == "🌍 Geographic Distribution":
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "💡 Innovation":
-    st.header("💡 Innovation Interactive Plots")
+    st.subheader("💡 Innovation Interactive Plots")
 
     # 'Affiliation of Research Teams Building AI systems' Plot
     color_discrete_map9={'Academia': 'rgb(238, 99, 82)', 'Industry': 'rgb(121, 132, 120)', 'Academia & Industry Collab': 'rgb(76, 134, 168)', 'Other': 'rgb(170, 109, 163)'}
@@ -242,7 +230,7 @@ elif section == "💡 Innovation":
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "💵 Investment":
-    st.header("💵 Investment Interactive Plots")
+    st.subheader("💵 Investment Interactive Plots")
     
     # Annual Private Investment in AI by Location
     fig12 = go.Figure()
@@ -299,7 +287,7 @@ elif section == "👥 Public View":
         if submitted:
             st.success("Thanks for sharing your opinion!")
     
-    st.header("👥 Public View Interactive Plots")
+    st.subheader("👥 Public View Interactive Plots")
     # Americans Opinion About Their Work Being Automated
     color_discrete_map16={"Don't Know": "rgb(58, 45, 50)", "Worried": "rgb(221, 96, 49)", "Not Worried": "rgb(68, 114, 202)", "Very Worried": "rgb(147, 3, 46)"}
     fig16 = px.bar(df_automated_survey, x='year', y='opinion_count', color='opinion', barmode='stack', facet_col='entity', color_discrete_map = color_discrete_map16,
@@ -329,7 +317,8 @@ elif section == "👥 Public View":
 
     # 'Male/Female Views on AI's Societal Impact' Sunburst Charts
     color_discrete_map19 = {'Mostly Helpful': 'rgb(64, 71, 109)', 'No Opinion': 'rgb(172, 190, 163)','Mostly Harmful': 'rgb(242, 71, 48)', 'Neither': 'rgb(189, 160, 188)'}
-    fig19 = make_subplots(rows=1, cols=2, specs=[[{'type': 'domain'}, {'type': 'domain'}]],subplot_titles=("Male/Female Views on AI's Societal Impact (2019)","Male/Female Views on AI's Societal Impact (2021)"))
+    fig19 = make_subplots(rows=1, cols=2, specs=[[{'type': 'domain'}, {'type': 'domain'}]],subplot_titles=("Male/Female Views on AI's Societal Impact (2019)",
+                                                                                                           "Male/Female Views on AI's Societal Impact (2021)"))
     sunburst1 = px.sunburst(df_view_gender19, path=['entity', 'opinion'], color='opinion', values='opinion_percent',color_discrete_map=color_discrete_map19,
                             custom_data=['entity', 'opinion', 'opinion_percent'],hover_data=['entity', 'opinion', 'opinion_percent'])
     sunburst2 = px.sunburst(df_view_gender21, path=['entity', 'opinion'], color='opinion', values='opinion_percent', color_discrete_map=color_discrete_map19,
@@ -337,7 +326,7 @@ elif section == "👥 Public View":
     fig19.add_trace(sunburst1.data[0], row=1, col=1)
     fig19.add_trace(sunburst2.data[0], row=1, col=2)
     fig19.update_traces(hovertemplate='<b>%{label}</b><br>Value: %{value}<br>Gender: %{customdata[0]}', texttemplate='%{label}<br>%{percentEntry:.1%}',
-                        insidetextorientation='auto', textfont=dict(size=12.5))
+                        insidetextorientation='auto', textfont=dict(size=11.5))
     fig19.update_layout(margin=dict(t=50, l=30, r=0, b=0), plot_bgcolor='rgb(14, 177, 210)', width = 900, height = 450)
     st.plotly_chart(fig19, use_container_width=True)
 
@@ -353,32 +342,22 @@ elif section == "👥 Public View":
     st.plotly_chart(fig20, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
-elif section == "Comparison Tool":
-    st.header("Comparison Tool")
+elif section == "🔍 Comparison Tool":
+    st.subheader("Comparison Tool")
     st.markdown("Use this tool to compare different aspects of AI development across countries, domains, or time periods.")
     
     col1, col2 = st.columns(2)
-    
     with col1:
-        comparison_type = st.selectbox(
-            "Compare by:",
-            ["Country", "Domain", "Organization Type"])
-    
+        comparison_type = st.selectbox("Compare by:", ["Country", "Domain", "Organization Type"])
     with col2:
-        metric = st.selectbox(
-            "Metric:",
-            ["Investment", "Patents", "System Count", "Training Cost"])
+        metric = st.selectbox("Metric:", ["Investment", "Patents", "System Count", "Training Cost"])
     
     if st.button("Generate Comparison"):
         # Placeholder for comparison logic
         st.write("Comparison results would appear here based on selected parameters")
         
         # Example visualization
-        fig = px.bar(
-            x=["USA", "China", "EU", "Other"],
-            y=[45, 38, 12, 5],
-            labels={'x': 'Region', 'y': f'{metric} (Billions)'},
-            title=f"{metric} Comparison by {comparison_type}")
+        fig = px.bar(x=["USA", "China", "EU", "Other"], y=[45, 38, 12, 5],labels={'x': 'Region', 'y': f'{metric} (Billions)'},title=f"{metric} Comparison by {comparison_type}")
         st.plotly_chart(fig, use_container_width=True)
 
 # Footer
