@@ -150,7 +150,7 @@ def show_explanation(explanation, reference=None):
 
 # Section content
 if section == "🔧 AI Development":
-    st.header("🔧 AI Development")
+    st.header("🔧 AI Development Interactive Plots")
     with st.expander(f"Why This Matters❓❓", expanded=False):
         st.markdown("""**Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.**""")
     
@@ -160,7 +160,6 @@ if section == "🔧 AI Development":
         'Vision & ImageGeneration': 'rgb(144,103,189)', 'Vision': 'rgb(64,89,173)', 
         'ImageGeneration': 'rgb(4,129,188)', 'Multimodal': 'rgb(163,59,32)', 
         'Other': 'rgb(118,66,72)', 'Biology': 'rgb(12,206,187)', 'Games': 'rgb(242,158,76)'}
-    
     fig = px.scatter(
         df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',
         log_y=True, color_discrete_map=color_discrete_map,
@@ -177,8 +176,6 @@ if section == "🔧 AI Development":
         yaxis_title="Cost ($, inflation adjusted)", title_x=0.3,
         margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)')
     st.plotly_chart(fig, use_container_width=True)
-    show_explanation(
-        "**Insight**: Training large language models like BLOOM-176B (901K) requires significantly more energy than game-playing AI like AlphaGo (471K), demonstrating how different AI domains have varying resource needs. **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train. **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.")
 
     # 'Computation Used to Train AI Systems' Plot
     tickvals = [10**i for i in range(-12, 11)]
@@ -232,41 +229,21 @@ if section == "🔧 AI Development":
 
 
 # ---------------------------------------------------------------------------------------------------------
-elif section == "Section 2: Geographic Distribution":
-    st.header("Geographic Distribution")
+elif section == "🌍 Geographic Distribution":
+    st.header("🌍 Geographic Distribution Interactive Plots")
     
     # Cumulative Number of Large-Scale AI Systems by Country
-    color_discrete_map = {
-        'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 
-        'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 
-        'Germany': 'rgb(252, 100, 113)', 'Hong Kong': 'rgb(163, 67, 133)', 
-        'Israel': 'rgb(112, 110, 96)', 'Japan': 'rgb(170, 83, 98)', 
-        'Russia': 'rgb(237, 174, 73)', 'Saudi Arabia': 'rgb(223, 87, 188)', 
-        'Singapore': 'rgb(249, 220, 92)', 'South Korea': 'rgb(297, 40, 61)', 
-        'United Arab Emirates': 'rgb(183, 181, 179)', 'United Kingdom': 'rgb(237, 174, 73)', 
-        'United States': 'rgb(184, 12, 9)'
-    }
+    color_discrete_map = {'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 'Germany': 'rgb(252, 100, 113)', 
+                          'Hong Kong': 'rgb(163, 67, 133)', 'Israel': 'rgb(112, 110, 96)', 'Japan': 'rgb(170, 83, 98)', 'Russia': 'rgb(237, 174, 73)', 'Saudi Arabia': 'rgb(223, 87, 188)', 
+                          'Singapore': 'rgb(249, 220, 92)', 'South Korea': 'rgb(297, 40, 61)', 'United Arab Emirates': 'rgb(183, 181, 179)', 'United Kingdom': 'rgb(237, 174, 73)', 'United States': 'rgb(184, 12, 9)'}
     
-    fig = px.line(
-        data['geo'], x="year", y="cumulative_count", color="entity",
-        markers=True, color_discrete_map=color_discrete_map,
-        labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"},
-        title="Cumulative Number of Large-Scale AI Systems by Country",
-        width=1200, height=500
-    )
-    fig.update_traces(
-        text=data['geo']['entity'] + ": " + data['geo']['cumulative_count'].astype(str),
-        hoverinfo="text+name", marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black'))
-    )
-    fig.update_layout(
-        yaxis=dict(tickmode="linear", dtick=1), legend_title="Country",
-        yaxis_title="Cumulative AI System Count", title_x=0.17,
-        margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(229, 231, 230, 0.5)'
-    )
+    fig = px.line(df_cumulative, x="year", y="cumulative_count", color="entity", markers=True, color_discrete_map=color_discrete_map, 
+                  labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=1200, height=500)
+    fig.update_traces(text=df_cumulative["entity"] + ": " + df_cumulative["cumulative_count"].astype(str), hoverinfo="text+name", 
+                      marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black')))
+    fig.update_layout(xaxis=dict(tickmode="linear", dtick=10), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.17, 
+                      margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(229, 231, 230, 0.5)')
     st.plotly_chart(fig, use_container_width=True)
-    show_explanation(
-        "This chart tracks the cumulative count of notable AI systems developed by country over time, revealing the geographic concentration of AI development capabilities.",
-        reference="AI Index Report 2023, Crunchbase analysis")
 
 elif section == "Section 3: Innovation":
     st.header("Innovation")
