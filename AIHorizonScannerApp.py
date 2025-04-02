@@ -8,7 +8,7 @@ from PIL import Image
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime
-import base64
+import base6
 from io import BytesIO
 
 # ---------------------------------------------------------------------------------------------------------
@@ -21,15 +21,50 @@ st.set_page_config(
 
 # Load data (placeholder - replace with actual data loading)
 @st.cache_data
-def load_data():
-    # These would be replaced with actual data loading
-    return {'dev': pd.read_parquet('./data/df_hardware.parquet', engine = 'pyarrow'),
-            'geo': pd.read_parquet('./data/df_cumu.parquet', engine = 'pyarrow'),
-            'inno': pd.read_parquet('./data/df_patent_world.parquet', engine = 'pyarrow'),
-            'invest': pd.read_parquet('./data/df_investment.parquet', engine = 'pyarrow'),
-            'public': pd.read_parquet('./data/df_automated_survey.parquet', engine = 'pyarrow')}
+def load_dev_data():
+    df_hardware = pd.read_parquet("./data/df_hardware.parquet", engine = 'pyarrow')
+    df_computation = pd.read_parquet("./data/df_comput.parquet", engine = 'pyarrow')
+    df_datapoint = pd.read_parquet("./data/df_data.parquet", engine = 'pyarrow')
+    df_parameter = pd.read_parquet("./data/df_param.parquet", engine = 'pyarrow')
+    df_cost_hardware = pd.read_parquet("./data/df_cost_hardware.parquet", engine = 'pyarrow')
+    df_cumulative2 = pd.read_parquet("./data/df_cumu2.parquet", engine = 'pyarrow')
+    return df_hardware, df_computation, df_datapoint, df_parameter, df_cost_hardware, df_cumulative2
 
-data = load_data()
+df_hardware, df_computation, df_datapoint, df_parameter, df_cost_hardware, df_cumulative2 = load_dev_data()
+
+@st.cache_data
+def load_geo_data():
+    df_cumulative = pd.read_parquet("./data/df_cumu.parquet", engine = 'pyarrow')
+    df_patent_agg = pd.read_parquet("./data/df_patent_agg.parquet", engine = 'pyarrow')
+    df_bill = pd.read_parquet("./data/df_bill.parquet", engine = 'pyarrow')
+    return df_cumulative, df_patent_agg, df_bill
+
+df_cumulative, df_patent_agg, df_bill = load_geo_data()
+
+@st.cache_data
+def load_inno_invest_data():
+    df_affiliation = pd.read_parquet("./data/df_affiliation.parquet", engine = 'pyarrow')
+    df_patent_world = pd.read_parquet("./data/df_patent_world.parquet", engine = 'pyarrow')
+    df_patent_world2 = pd.read_parquet("./data/df_patent_world2.parquet", engine = 'pyarrow')
+    df_investment = pd.read_parquet("./data/df_investment.parquet", engine = 'pyarrow')
+    df_investment1 = pd.read_parquet("./data/df_investment1.parquet", engine = 'pyarrow')
+    df_investment2 = pd.read_parquet("./data/df_investment2.parquet", engine = 'pyarrow')
+    df_investment3 = pd.read_parquet("./data/df_investment3.parquet", engine = 'pyarrow')
+    return df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3
+
+df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3 = load_inno_invest_data()
+
+@st.cache_data
+def load_public_data():
+    df_automated_survey = pd.read_parquet("./data/df_automated_survey.parquet", engine = 'pyarrow')
+    df_view_country = pd.read_parquet("./data/df_view_country.parquet", engine = 'pyarrow')
+    df_view_continent21 = pd.read_parquet("./data/df_view_continent21.parquet", engine = 'pyarrow')
+    df_view_gender = pd.read_parquet("./data/df_view_gender.parquet", engine = 'pyarrow')
+    df_view3 = pd.read_parquet("./data/df_view3.parquet", engine = 'pyarrow')
+    return df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3
+
+df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3 = load_public_data()
+
 
 # Custom CSS
 st.markdown("""
@@ -73,7 +108,8 @@ st.markdown("""
     """, unsafe_allow_html=True)
 
 # Header
-st.title("Democratizing AI Development Knowledge")
+st.title("AI Horizon Scanner App")
+st.subheader("Democratizing AI Development Knowledge")
 
 # Weekly Spotlight
 current_week = datetime.now().strftime("%U")
@@ -87,13 +123,12 @@ with st.expander(f"📌 Weekly Spotlight (Week {current_week})", expanded=True):
 # Sidebar navigation
 st.sidebar.title("Navigation")
 section = st.sidebar.radio("Go to:", [
-    "Section 1: AI Development",
-    "Section 2: Geographic Distribution",
-    "Section 3: Innovation",
-    "Section 4: Investment",
-    "Section 5: Public View",
-    "Comparison Tool"])
-
+    "🔧 AI Development",
+    "🌍 Geographic Distribution",
+    "💡 Innovation",
+    "💵 Investment",
+    "👥 Public View",
+    "🔍 Comparison Tool"])
 
 def show_explanation(explanation, reference=None):
     # Create a unique key for this explanation section
@@ -118,11 +153,12 @@ def show_explanation(explanation, reference=None):
         
         st.markdown(explanation_content, unsafe_allow_html=True)
 
-
 # Section content
-if section == "Section 1: AI Development":
-    st.header("AI Development")
-    
+if section == "🔧 AI Development":
+    st.header("🔧 AI Development")
+    with st.expander(f"Why This Matters❓❓", expanded=False):
+    st.markdown("""**Understanding the resources required to develop AI systems helps us assess 
+    who can participate in AI development and how access to these technologies might be distributed.**""")
     
     # Cost to Train AI Systems Plot
     color_discrete_map = {
@@ -133,7 +169,7 @@ if section == "Section 1: AI Development":
     }
     
     fig = px.scatter(
-        data['dev'], x="day", y="cost__inflation_adjusted", color="domain",
+        df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',
         log_y=True, color_discrete_map=color_discrete_map,
         labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
         title="Energy Cost to Train AI Systems",
@@ -142,18 +178,18 @@ if section == "Section 1: AI Development":
     fig.update_traces(
         marker=dict(size=8, opacity=0.8, line=dict(width=0.5, color='black')),
         textposition="top center", showlegend=True,
-        textfont=dict(size=8, style="italic", color='black')
+        textfont=dict(size=7, style="italic", color='black')
     )
     fig.update_layout(
         xaxis_title="Year", legend_title="Domain", hovermode="closest",
-        yaxis=dict(type="log", tickvals=[163, 164, 165, 166, 167]),
-        yaxis_title="Cost (USD, inflation adjusted)", title_x=0.3,
-        margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)'
-    )
+        yaxis=dict(type="log", tickvals=[1e3, 1e4, 1e5, 1e6, 1e7], ticktext=["1K", "10K", "100K", "1M", "10M"]),
+        yaxis_title="Cost ($, inflation adjusted)", title_x=0.3,
+        margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)')
     st.plotly_chart(fig, use_container_width=True)
     show_explanation(
-        "This chart shows the inflation-adjusted cost to train notable AI systems over time, broken down by domain. The logarithmic scale reveals the exponential growth in training costs, particularly for language models.",
-        reference="AI Index Report 2023, Stanford HAI")
+        "**Insight**: Training large language models like BLOOM-176B (901K) requires significantly more energy than game-playing AI like AlphaGo (471K), demonstrating how different AI domains have varying resource needs.",
+        "**Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.",
+        "**Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.")
     
 
 elif section == "Section 2: Geographic Distribution":
