@@ -49,8 +49,6 @@ def load_inno_invest_data():
     return df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3
 
 df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3 = load_inno_invest_data()
-df_view_gender19 = df_view_gender[df_view_gender['year'] == 2019]
-df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
 @st.cache_data
 def load_public_data():
@@ -62,6 +60,8 @@ def load_public_data():
     return df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3
 
 df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_view3 = load_public_data()
+df_view_gender19 = df_view_gender[df_view_gender['year'] == 2019]
+df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
 # Header
 st.title("AI Horizon Scanner App")
