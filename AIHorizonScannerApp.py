@@ -226,24 +226,22 @@ if section == "🔧 AI Development":
                        yaxis_title="Training Computation (petaFLOP)", legend_title="Organization", hovermode="closest", margin=dict(l=5, r=5, t=35, b=5), title_x=0.12, plot_bgcolor='rgba(240, 247, 244, 0.5)')
     st.plotly_chart(fig5, use_container_width=True)
 
-
-
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🌍 Geographic Distribution":
     st.header("🌍 Geographic Distribution Interactive Plots")
     
     # Cumulative Number of Large-Scale AI Systems by Country
-    color_discrete_map = {'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 'Germany': 'rgb(252, 100, 113)', 
-                          'Hong Kong': 'rgb(163, 67, 133)', 'Israel': 'rgb(112, 110, 96)', 'Japan': 'rgb(170, 83, 98)', 'Russia': 'rgb(237, 174, 73)', 'Saudi Arabia': 'rgb(223, 87, 188)', 
-                          'Singapore': 'rgb(249, 220, 92)', 'South Korea': 'rgb(297, 40, 61)', 'United Arab Emirates': 'rgb(183, 181, 179)', 'United Kingdom': 'rgb(237, 174, 73)', 'United States': 'rgb(184, 12, 9)'}
+    color_discrete_map6 = {'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 'Germany': 'rgb(252, 100, 113)', 
+                           'Hong Kong': 'rgb(163, 67, 133)', 'Israel': 'rgb(112, 110, 96)', 'Japan': 'rgb(170, 83, 98)', 'Russia': 'rgb(237, 174, 73)', 'Saudi Arabia': 'rgb(223, 87, 188)', 
+                           'Singapore': 'rgb(249, 220, 92)', 'South Korea': 'rgb(297, 40, 61)', 'United Arab Emirates': 'rgb(183, 181, 179)', 'United Kingdom': 'rgb(237, 174, 73)', 'United States': 'rgb(184, 12, 9)'}
     
-    fig = px.line(df_cumulative, x="year", y="cumulative_count", color="entity", markers=True, color_discrete_map=color_discrete_map, 
-                  labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=1200, height=500)
-    fig.update_traces(text=df_cumulative["entity"] + ": " + df_cumulative["cumulative_count"].astype(str), hoverinfo="text+name", 
-                      marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black')))
-    fig.update_layout(xaxis=dict(tickmode="linear", dtick=10), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.17, 
-                      margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(229, 231, 230, 0.5)')
-    st.plotly_chart(fig, use_container_width=True)
+    fig6 = px.line(df_cumulative, x="year", y="cumulative_count", color="entity", markers=True, color_discrete_map=color_discrete_map, 
+                   labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=1200, height=500)
+    fig6.update_traces(text=df_cumulative["entity"] + ": " + df_cumulative["cumulative_count"].astype(str), hoverinfo="text+name", 
+                       marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black')))
+    fig6.update_layout(xaxis=dict(tickmode="linear", dtick=10), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.17, 
+                       margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(229, 231, 230, 0.5)')
+    st.plotly_chart(fig6, use_container_width=True)
 
 elif section == "Section 3: Innovation":
     st.header("Innovation")
