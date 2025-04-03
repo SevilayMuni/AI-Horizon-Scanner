@@ -215,6 +215,46 @@ if section == "🔧 AI Development":
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🌍 Geographic Distribution":
     st.subheader("🌍 Geographic Distribution Interactive Plots")
+    # KPIs
+    top_country = df_cumulative.groupby('entity')['cumulative_count'].max().idxmax()
+        
+    df_cumulative25 = df_cumulative[df_cumulative['year'] == 2025]        
+    us_share =(df_cumulative25[df_cumulative25['entity'] == "United States"]['cumulative_count'] / df_cumulative25['cumulative_count'].sum()).iloc[0]
+    
+    top_patent_country = df_patent_agg.sort_values(by='num_patent_applications__field_all', ascending=False)
+    
+    count = df_bill[df_bill['number_of_ai_related_bills_passed_into_law'] != 0].shape[0]
+    print(f"{count}", "Country", "Passed AI-related Bill into Law")
+               
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Leading Country", f"{top_country}:", help="Country with highest AI systems by 2025")
+    col2.metric("USA Market Share:", f"{us_share:.1%}%", help="USA share in global AI systems")
+    col3.metric("Highest Patent Application:", f"{top_patent_country.iloc[1,2]/1e3:.1f}K", f"{top_patent_country.iloc[1,0]}", help=f"Country with highest patent application")
+    col4.metric("In Europe", f"{count}", "Country", help=f"Number of European countries passed AI-related bill into law"")
+
+    matter_text = '''The geographic concentration of AI development affects global power dynamics and determines which cultural perspectives are embedded in these influential technologies'''
+    explain_text = '''**Dominance**: The US leads significantly in large-scale AI systems, followed by China, with other countries far behind.   
+    **Emerging Players**: The UK and South Korea began showing notable AI development in 2021.   
+    **Policy Implication**: This indicates a significant concentration of AI development power in a few nations.'''
+    explain_text2 = '''**Dominance**: China leads with 365K patent applications, followed by the USA with 72K.   
+    **Emerging Players**: Germany leads the EU region.'''
+    explain_text3 = '''**Concern**: Few countries have enacted AI-related legislation.   
+    **Finding**: The USA has passed 23 bills, with Portugal in second place.   
+    **Surprise**: Despite being a major AI player, China has passed only 3 bills.'''
+    col1, col2, col3, col4 = st.columns(4)
+    with col1: 
+        with st.popover("❓❓ Why This Matters"):
+            st.markdown(matter_text)
+    with col2:
+        with st.popover("🤖 AI Count Chart"):
+            st.markdown(explain_text)
+    with col3:
+        with st.popover("📝 Patent Chart"):
+            st.markdown(explain_text2)
+    with col4:
+        with st.popover("💼 Bill Chart"):
+            st.markdown(explain_text3)
+
     
     # Cumulative Number of Large-Scale AI Systems by Country
     color_discrete_map6 = {'Canada': 'rgb(192, 43, 61)', 'China': 'rgb(20, 19, 1)', 'Finland': 'rgb(206, 162, 172)', 'France': 'rgb(166, 117, 161)', 'Germany': 'rgb(252, 100, 113)', 
@@ -222,7 +262,7 @@ elif section == "🌍 Geographic Distribution":
                            'Singapore': 'rgb(249, 220, 92)', 'South Korea': 'rgb(297, 40, 61)', 'United Arab Emirates': 'rgb(183, 181, 179)', 'United Kingdom': 'rgb(237, 174, 73)', 'United States': 'rgb(184, 12, 9)'}
     
     fig6 = px.line(df_cumulative, x="year", y="cumulative_count", color="entity", markers=True, color_discrete_map=color_discrete_map6, 
-                   labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=1000, height=400)
+                   labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=700, height=450)
     fig6.update_traces(text=df_cumulative["entity"] + ": " + df_cumulative["cumulative_count"].astype(str), hoverinfo="text+name", 
                        marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black')))
     fig6.update_layout(xaxis=dict(tickmode="linear", dtick=10), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.17, 
@@ -231,16 +271,16 @@ elif section == "🌍 Geographic Distribution":
 
     # World Map for 'Country-Wise AI-Related Total Patent Applications by 2024'
     fig7 = px.choropleth(df_patent_agg, locations='entity', locationmode="country names", color="num_patent_applications__field_all", hover_name=None, 
-                         hover_data={"num_patent_applications__field_all": True}, color_continuous_scale="Viridis_r", width=800, height=400, 
+                         hover_data={"num_patent_applications__field_all": True}, color_continuous_scale="Viridis_r", width=600, height=400, 
                          labels={"entity": "Country", "num_patent_applications__field_all": "Application Count"}, title="Country-Wise AI-Related Total Patent Applications by 2024")
-    fig7.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.16, margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
+    fig7.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.25, margin=dict(l=5, r=5, t=25, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
     st.plotly_chart(fig7, use_container_width=True)
 
     # World Map for 'AI-Related Passed Bill into Law by Country'
     fig8 = px.choropleth(df_bill, locations='entity', locationmode="country names", color="number_of_ai_related_bills_passed_into_law", 
                          hover_data={"number_of_ai_related_bills_passed_into_law": True}, hover_name=None, color_continuous_scale="Inferno_r", 
-                         labels={"entity": "Country", "number_of_ai_related_bills_passed_into_law": "Passed Bill Count"}, title="AI-Related Passed Bill into Law by Country", width=800, height=400)
-    fig8.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.22, margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
+                         labels={"entity": "Country", "number_of_ai_related_bills_passed_into_law": "Passed Bill Count"}, title="Country-Wise AI-Related Passed Bill into Law by 2023", width=600, height=400)
+    fig8.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.3, margin=dict(l=5, r=5, t=25, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
     st.plotly_chart(fig8, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
