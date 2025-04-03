@@ -61,7 +61,7 @@ df_view_gender19 = df_view_gender[df_view_gender['year'] == 2019]
 df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
 # Header
-st.header("AI Horizon Scanner App: Democratizing AI Development Knowledge")
+st.header("AI Horizon Scanner App: Democratizing AI Knowledge")
 info_multi = '''AI Horizon Scanner displays AI-related metrics in charts and key insights that help you track ongoing developments. 
 I aim to support the growing and vital public conversation about AI with this dashboard.'''
 st.info(info_multi)
