@@ -11,6 +11,9 @@ from datetime import datetime
 
 # Configure page
 st.set_page_config(page_title="AI Horizon Scanner App", page_icon=":bar_chart:", layout="wide")
+# Sidebar navigation
+st.sidebar.title("Navigation")
+section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Comparison Tool"])
 
 # Load data
 @st.cache_data
@@ -60,31 +63,6 @@ df_automated_survey, df_view_country, df_view_continent21, df_view_gender, df_vi
 df_view_gender19 = df_view_gender[df_view_gender['year'] == 2019]
 df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
-# Header
-st.header("AI Horizon Scanner App: Democratizing AI Knowledge")
-info_multi = '''AI Horizon Scanner displays AI-related metrics in charts and key insights that help you track ongoing developments. 
-I aim to support the growing and vital public conversation about AI with this dashboard.'''
-st.info(info_multi)
-
-# Weekly Spotlight
-current_week = datetime.now().strftime("%U")
-with st.expander(f"📌 Weekly Spotlight (Week {current_week})", expanded=True):
-    st.markdown("""
-    **Key Finding:** The cost to train state-of-the-art AI systems has increased 100x in the last 5 years, 
-    with language models now costing over $100 million to train. This rapid escalation raises important 
-    questions about equitable access to AI development capabilities.
-    """)
-
-# Sidebar navigation
-st.sidebar.title("Navigation")
-section = st.sidebar.radio("Go to:", [
-    "🔧 AI Development",
-    "🌍 Geographic Distribution",
-    "💡 Innovation",
-    "💵 Investment",
-    "👥 Public View",
-    "🔍 Comparison Tool"])
-
 # Helper Functions
 # Define function to number formating
 def format_investment(value):
@@ -95,11 +73,37 @@ def format_investment(value):
     else:
         return str(value)
 
-# Section content
+info_multi = '''AI Horizon Scanner displays AI-related metrics in charts and key insights that help you track ongoing developments. 
+I aim to support the growing and vital public conversation about AI with this dashboard.'''
+
+# Header
+st.header("AI Horizon Scanner App: Democratizing AI Knowledge")
+
 if section == "🔧 AI Development":
-    st.subheader("🔧 AI Development Interactive Plots")
-    with st.expander(f"Why This Matters❓❓", expanded=False):
-        st.markdown("""**Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.**""")
+    st.info(info_multi)
+
+    # Weekly Spotlight
+    current_week = datetime.now().strftime("%U")
+    with st.expander(f"📌 Weekly Spotlight (Week {current_week})", expanded=True):
+        st.markdown("""
+        **Key Finding:** The cost to train state-of-the-art AI systems has increased 100x in the last 5 years, 
+        with language models now costing over $100 million to train. This rapid escalation raises important 
+        questions about equitable access to AI development capabilities.
+        """)
+
+    st.subheader("🔧 AI Development Interactive Charts")
+    ai_dev_text = '''Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.'''
+    explain_text = '''**Insight:** Language models require orders of magnitude more computation than other domains.
+    **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.
+    **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.'''
+    col1, col2 = tab2.columns(2)
+    with tab2.col1:
+        with st.popover("❓❓ Why This Matters"):
+            st.markdown(ai_dev_text)
+
+    with tab2.col2:
+        with st.popover("📚 Explain Charts"):
+            st.markdown(ma_text)
     
     # Cost to Train AI Systems Plot
     color_discrete_map = {'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)','Vision & ImageGeneration': 'rgb(144,103,189)','Vision': 'rgb(64,89,173)', 
