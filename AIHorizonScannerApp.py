@@ -268,7 +268,7 @@ elif section == "🌍 Geographic Distribution":
 
     # World Map for 'Country-Wise AI-Related Total Patent Applications by 2024'
     fig7 = px.choropleth(df_patent_agg, locations='entity', locationmode="country names", color="num_patent_applications__field_all", hover_name=None, 
-                         hover_data={"num_patent_applications__field_all": True}, color_continuous_scale="Viridis_r", width=400, height=300, 
+                         hover_data={"num_patent_applications__field_all": True}, color_continuous_scale="Viridis_r", width=500, height=400, 
                          labels={"entity": "Country", "num_patent_applications__field_all": "Application Count"}, title="Country-Wise AI-Related Total Patent Applications by 2024")
     fig7.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.22, margin=dict(l=5, r=5, t=25, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
     st.plotly_chart(fig7, use_container_width=True)
@@ -276,7 +276,7 @@ elif section == "🌍 Geographic Distribution":
     # World Map for 'AI-Related Passed Bill into Law by Country'
     fig8 = px.choropleth(df_bill, locations='entity', locationmode="country names", color="number_of_ai_related_bills_passed_into_law", 
                          hover_data={"number_of_ai_related_bills_passed_into_law": True}, hover_name=None, color_continuous_scale="Inferno_r", 
-                         labels={"entity": "Country", "number_of_ai_related_bills_passed_into_law": "Passed Bill Count"}, title="Country-Wise AI-Related Passed Bill into Law by 2023", width=400, height=300)
+                         labels={"entity": "Country", "number_of_ai_related_bills_passed_into_law": "Passed Bill Count"}, title="Country-Wise AI-Related Passed Bill into Law by 2023", width=500, height=400)
     fig8.update_layout(geo=dict(showcoastlines=True, showframe=True), title_x=0.25, margin=dict(l=5, r=5, t=25, b=5), plot_bgcolor='rgb(249, 248, 248)', coloraxis_colorbar=dict(title="Count"))
     st.plotly_chart(fig8, use_container_width=True)
 
