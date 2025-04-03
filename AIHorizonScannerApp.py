@@ -147,7 +147,7 @@ if section == "🔧 AI Development":
     fig = px.scatter(df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',log_y=True, color_discrete_map=color_discrete_map,
                      labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
                      title="Energy Cost to Train AI Systems", width=800, height=450)
-    fig.update_traces(marker=dict(size=8, opacity=0.8, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, 
+    fig.update_traces(marker=dict(size=8.5, opacity=0.8, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, 
                       textfont=dict(size=7, style="italic", color='black'))
     fig.update_layout(xaxis_title="Year", legend_title="Domain", hovermode="closest", yaxis=dict(type="log", tickvals=[1e3, 1e4, 1e5, 1e6, 1e7], ticktext=["1K", "10K", "100K", "1M", "10M"]), 
                       yaxis_title="Cost ($, inflation adjusted)", title_x=0.3, margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240,247,244,0.5)')
@@ -159,7 +159,7 @@ if section == "🔧 AI Development":
                          'Multiple Domains': 'rgb(240, 56, 107)', 'Other': 'rgb(118, 66, 72)','Biology': 'rgb(138, 155, 104)', 'Games': 'rgb(242, 158, 76)'}
     fig2 = px.scatter(df_computation, x="day", y="training_computation_petaflop", color="domain", log_y=True, color_discrete_map=color_discrete_map2, 
                       labels={"training_computation_petaflop": "Computation", "day": "Time", "entity": "AI System", "domain": "Domain"},
-                      title="Computation Used to Train AI Systems", width=700, height=300)
+                      title="Computation Used to Train AI Systems", width=650, height=400)
     fig2.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
     fig2.update_layout(yaxis=dict(type="log", tickvals=tickvals), xaxis_title="Year", yaxis_title="Training Computation (petaFLOP)", hovermode="closest", 
                        legend_title="AI Domain", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.28)
@@ -171,7 +171,7 @@ if section == "🔧 AI Development":
                          'Multiple Domains': 'rgb(240, 56, 107)', 'Other': 'rgb(118, 66, 72)', 'Biology': 'rgb(138, 155, 104)', 'Games': 'rgb(242, 158, 76)'}
     fig3 = px.scatter(df_datapoint, x="day", y="training_dataset_size__datapoints", color="domain", log_y=True, color_discrete_map=color_discrete_map3,
                       labels={"training_dataset_size__datapoints": "Size", "day": "Time", "entity": "AI System", "domain": "Domain"}, 
-                      title="Datapoints Used to Train AI Systems", hover_data = ['entity', 'domain'], width=700, height=300)
+                      title="Datapoints Used to Train AI Systems", hover_data = ['entity', 'domain'], width=650, height=400)
     fig3.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
     fig3.update_layout(yaxis=dict(type="log", tickvals=tickvals3), xaxis_title="Year", yaxis_title="Training Datapoints", legend_title="AI Domain", 
                        hovermode="closest", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.28)
@@ -182,7 +182,7 @@ if section == "🔧 AI Development":
     color_discrete_map4={'Academia & Industry Collab': 'rgb(179, 136, 235)', 'Industry': 'rgb(255, 90, 95)', 'Other': 'rgb(52, 46, 55)', 'Academia': 'rgb(8, 126, 139)'}
     fig4 = px.scatter(df_parameter, x="day", y="parameters", color="organization_categorization", log_y=True, title="Number of Parameter Used to Train AI",
                       labels={"parameters": "Parameters", "day": "Time", "entity": "AI System", "organization_categorization": "Organization"}, 
-                      hover_data = ['entity', 'organization_categorization'], width=800, height=350, color_discrete_map=color_discrete_map4)
+                      hover_data = ['entity', 'organization_categorization'], width=800, height=400, color_discrete_map=color_discrete_map4)
     fig4.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
     fig4.update_layout(yaxis=dict(type="log", tickvals=tickvals4), xaxis_title="Year", yaxis_title="Number of Adjusted Parameters", hovermode="closest",
                       legend_title="Organization", margin=dict(l=5, r=5, t=35, b=5), title_x=0.25, plot_bgcolor='rgba(240, 247, 244, 0.5)')
@@ -195,7 +195,7 @@ if section == "🔧 AI Development":
     fig5 = px.scatter(df_cost_hardware, x="parameters", y="training_computation_petaflop", color="organization_categorization", log_y=True,
                       labels={"parameters": "Parameters", "training_computation_petaflop": "Computation", "entity": "AI System", "organization_categorization": "Organization"},
                       title="Training Computation vs. Parameters in AI Systems by Organization", hover_data = ['entity', 'organization_categorization'], 
-                      width=800, height=350, color_discrete_map=color_discrete_map5)
+                      width=800, height=400, color_discrete_map=color_discrete_map5)
     fig5.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')),textposition="top center", showlegend=True,textfont=dict(size=9, style="italic"))
     fig5.update_layout(yaxis=dict(type="log", tickvals = ytickvals), xaxis_title="Number of Adjusted Parameters", xaxis=dict(type="log", tickvals = xtickvals),
                        yaxis_title="Training Computation (petaFLOP)", legend_title="Organization", hovermode="closest", margin=dict(l=5, r=5, t=35, b=5), title_x=0.2, plot_bgcolor='rgba(240, 247, 244, 0.5)')
