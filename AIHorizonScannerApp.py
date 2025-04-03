@@ -120,11 +120,16 @@ if section == "🔧 AI Development":
     col5.metric("Industry Avg:", f"{df_cost_hardware24.iloc[0]/1e9:.1f}B pFLOP", f"{df_cost_hardware24.iloc[1]/1e9:.1f}B parameters", help=f"Industry developed AI systems in 2024")
     
     ai_dev_text = '''Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.'''
-    explain_text = '''**Insight:** Language models require orders of magnitude more computation than other domains.
-    **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.
+    explain_text = '''**Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.
     **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.'''
-    
-    col1, col2, col3, col4, col5 = st.columns(5)
+    explain_text2 = '''**Insight**: Language models require orders of magnitude more computation than other domains. 
+    **Surprise**: Early vision systems from the 1960s, such as Perceptron, required remarkably high computation for their era.
+    **Implication**: The computational demands of AI may create barriers to entry for smaller organizations.'''
+    explain_text3 = '''**Finding**: Modern language models use trillion-scale datasets (e.g., DeepSeek-V3's 14.8 trillion in 2024), while early vision systems used only thousands of data points.
+    **Concern**: These massive datasets raise questions about data sourcing practices and potential copyright issues.'''
+    explain_text4 = '''**Trend**: Industry collaborations now produce AI systems with the most parameters, outpacing purely academic efforts.
+    **Example**: In 2018, the Mesh Tensorflow Transformer (Industry) contained 2.8B parameters, exceeding academic collaborations of that time.'''
+    col1, col2, col3 = st.columns(3)
     with col1: 
         with st.popover("❓❓ Why This Matters"):
             st.markdown(ai_dev_text)
@@ -133,13 +138,7 @@ if section == "🔧 AI Development":
             st.markdown(explain_text)
     with col3:
         with st.popover("🖥️ Explain Computation Chart"):
-            st.markdown(explain_text)
-    with col4:
-        with st.popover("📚 Explain Datapoint Chart"):
-            st.markdown(explain_text)
-    with col5:
-        with st.popover("📈 Explain Parameter Chart"):
-            st.markdown(explain_text)
+            st.markdown(explain_text2)
             
     # Cost to Train AI Systems Plot
     color_discrete_map = {'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)','Vision & Image Generation': 'rgb(144,103,189)','Vision': 'rgb(64,89,173)', 
@@ -164,6 +163,13 @@ if section == "🔧 AI Development":
     fig2.update_layout(yaxis=dict(type="log", tickvals=tickvals), xaxis_title="Year", yaxis_title="Training Computation (petaFLOP)", hovermode="closest", 
                        legend_title="AI Domain", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.3)
     st.plotly_chart(fig2, use_container_width=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        with st.popover("📚 Explain Datapoint Chart"):
+            st.markdown(explain_text3)
+    with col2:
+        with st.popover("📈 Explain Parameter Chart"):
+            st.markdown(explain_text4)
 
     # 'Datapoints Used to Train AI Systems' Plot
     tickvals3 = [10**i for i in range(1, 13)]
