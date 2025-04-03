@@ -284,13 +284,50 @@ elif section == "🌍 Geographic Distribution":
 elif section == "💡 Innovation":
     st.subheader("💡 Innovation Interactive Plots")
 
+    # Innovation KPIs
+    tot_research = df_affiliation.groupby('entity')['yearly_count'].sum()
+    industry_percent = tot_research['Industry']/tot_research.sum() * 100
+    df_academia = df_affiliation[df_affiliation['entity'] == 'Academia']
+    prev_academia = df_academia[df_academia['year'] == 2023]['yearly_count'].sum()
+    last_academia = df_academia[df_academia['year'] == 2024]['yearly_count'].sum()
+    yoy_academia = (last_academia - prev_academia) / prev_academia * 100
+    patents_2023 = df_patent_world['num_patent_granted__field_all'].sum()
+    last_year = df_patent_world[df_patent_world['year'] == 2023]['num_patent_granted__field_all'].sum()
+    prev_year = df_patent_world[df_patent_world['year'] == 2022]['num_patent_granted__field_all'].sum()
+    yoy_growth = (last_year - prev_year) / prev_year * 100
+    top_industry = df_patent_world2.groupby('industry')['patent_count'].sum()
+
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Industry Affiliation", f"{industry_percent:.1f}%", help="Percentage of industry affiliated AI system developers")
+    col2.metric("Academia Affiliation YoY", f"{yoy_academia:.1f}%", help="Change in academia affiliation, 2022 → 2023")
+    col3.metric("Granted AI Patents", f"{patents_2023/1e3:.1f}K", help=f"Worldwide granted AI patent count by 2023")
+    col4.metric("Granted Patent YoY", f"{yoy_growth:.1f}%", help=f"Worldwide granted AI patent change, 2022 → 2023")
+    col4.metric("Top Industry", f"{top_industry.max()/1e3:.1f}K", top_industry.idxmax(), help=f"Leading industry with granted AI patent")
+    
+    matter_text = '''Tracking innovation through patents and research affiliations helps us understand where AI capabilities are being developed and who controls this intellectual property.'''
+    explain_text = '''**Shift**: Since 2015, industry involvement has grown dramatically while academic projects have declined, with no purely academic affiliations by 2024.   
+    **Current State**: The Industry now produces most notable AI systems research.'''
+    explain_text2 = '''**Explosion**: AI patent applications surged from 10K in 2013 to over 150K in 2021.   
+    **Trend**: The percentage of granted applications increased until 2021 and then decreased, suggesting stricter approval policies.    
+    **Industry Focus**: Personal Devices & Computing leads in granted patents, followed by Telecommunications. Banking & Finance holds the smallest share.'''
+    col1, col2, col3 = st.columns(3)
+    with col1: 
+        with st.popover("❓❓ Why This Matters"):
+            st.markdown(matter_text)
+    with col2:
+        with st.popover("💰 Explain Affiliation Chart"):
+            st.markdown(explain_text)
+    with col3:
+        with st.popover("🖥️ Explain Patent Charts"):
+            st.markdown(explain_text2)
+    
     # 'Affiliation of Research Teams Building AI systems' Plot
     color_discrete_map9={'Academia': 'rgb(238, 99, 82)', 'Industry': 'rgb(121, 132, 120)', 'Academia & Industry Collab': 'rgb(76, 134, 168)', 'Other': 'rgb(170, 109, 163)'}
     fig9 = px.bar(df_affiliation, x="year", y="yearly_count", color="entity", text_auto=False, color_discrete_map = color_discrete_map9, 
-                  labels={"entity": "Sector", "year": "Year", "yearly_count": "Count"}, title="Affiliation of Research Teams Building AI systems", width=1000, height=400)
+                  labels={"entity": "Sector", "year": "Year", "yearly_count": "Count"}, title="Affiliation of Research Teams Building AI systems", width=700, height=350)
     fig9.update_traces(hoverinfo="text+name")
     fig9.update_layout(barmode="stack", yaxis=dict(title="Count"), xaxis=dict(title = "Publication Year", tickmode="linear", dtick=1, tickangle=-45), legend_title="Sector", 
-                       hovermode="x unified", title_x = 0.2, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
+                       hovermode="x unified", title_x = 0.25, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
     st.plotly_chart(fig9, use_container_width=True)
     
     # Worldwide AI Related Patent Applications by Status
@@ -301,7 +338,7 @@ elif section == "💡 Innovation":
                            text=df_patent_world['num_patent_applications__field_all'], textfont=dict(size=10, weight='bold'), marker_color='rgb(222, 143, 110)'))
     fig10.update_traces(hoverinfo="text+name", marker=dict(opacity=0.8))
     fig10.update_layout(barmode="stack", yaxis=dict(title="Patent Count"), xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), legend_title="Status", 
-                        hovermode="x unified", width=1000, height=400, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', title="Worldwide AI Related Patent Applications by Status", title_x=0.25)
+                        hovermode="x unified", width=600, height=300, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', title="Worldwide AI Related Patent Applications by Status", title_x=0.27)
     st.plotly_chart(fig10, use_container_width=True)
 
     # 'Worldwide Annual Granted AI Related Patents by Industry' Plot
@@ -309,10 +346,10 @@ elif section == "💡 Innovation":
                           'Business': 'rgb(119, 133, 172)', 'Security': 'rgb(139, 93, 51)', 'Life Sciences': 'rgb(134, 157, 122)', 'Transportation': 'rgb(255, 133, 82)', 
                           'Physical Sciences & Engineering': 'rgb(60, 79, 118)','Telecommunication': 'rgb(127, 5, 95)', 'Personal Devices & Computing': 'rgb(11, 122, 117)'}
     fig11 = px.bar(df_patent_world2, x="year", y="patent_count", color="industry", text_auto=False, color_discrete_map = color_discrete_map11,
-                   labels={"industry": "Industry", "year": "Year", "patent_count": "Patent Count"}, title="Worldwide Annual Granted AI Related Patents by Industry", width=1000, height=400)
+                   labels={"industry": "Industry", "year": "Year", "patent_count": "Patent Count"}, title="Worldwide Annual Granted AI Related Patents by Industry", width=700, height=400)
     fig11.update_traces(hoverinfo="text+name")
     fig11.update_layout(barmode="stack", xaxis=dict(title = "Year", tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Granted Patent Count"), 
-                        legend_title="Industry", title_x=0.17, margin=dict(l=100, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
+                        legend_title="Industry", title_x=0.25, margin=dict(l=100, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
     st.plotly_chart(fig11, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
