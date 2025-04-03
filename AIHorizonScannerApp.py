@@ -114,10 +114,10 @@ if section == "🔧 AI Development":
     st.subheader("🔧 AI Development")
     col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Most Expensive AI", f"{ai_sys}:", f"${latest_cost/1e6:.1f}M", help="Latest most expensive AI to train")
-    col2.metric("Training Computation YoY:", f"{delta_cost:.1f}%", help="Year-over-Year change in training computation")
-    col3.metric("Highest Avg Training Datapoints:", f"{avg_datapoint.iloc[0, 0]} with", f"{avg_datapoint.iloc[0, 1]/1e9:.1f}B", help=f"AI domain with highest training datapoint")
-    col4.metric("Avg Parameters in New Systems:", f"{avg_params/1e9:.1f}B", help=f"Average adjusted parameter number in latest year")
-    col5.metric("2024 Industry Avg:", f"{df_cost_hardware24.iloc[0]/1e9:.1f}B petaFLOP", f"{df_cost_hardware24.iloc[1]/1e9:.1f}B parameters", help=f"Industry developed AI systems in 2024")
+    col2.metric("Computation YoY:", f"{delta_cost:.1f}%", help="Year-over-Year change in training computation")
+    col3.metric("Highest Training Datapoints:", f"{avg_datapoint.iloc[0, 1]/1e9:.1f}B", f"{avg_datapoint.iloc[0, 0]}", help=f"AI domain with highest average training datapoint")
+    col4.metric("Avg Parameters:", f"{avg_params/1e9:.1f}B", help=f"Average adjusted parameter number in latest year")
+    col5.metric("Industry Avg:", f"{df_cost_hardware24.iloc[0]/1e9:.1f}B pFLOP", f"{df_cost_hardware24.iloc[1]/1e9:.1f}B parameters", help=f"Industry developed AI systems in 2024")
     
     ai_dev_text = '''Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.'''
     explain_text = '''**Insight:** Language models require orders of magnitude more computation than other domains.
