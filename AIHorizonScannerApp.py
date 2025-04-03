@@ -62,9 +62,9 @@ df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
 # Header
 st.header("AI Horizon Scanner App: Democratizing AI Development Knowledge")
-st.info("Currently, decisions about AI development and usage are limited to a small group of entrepreneurs and engineers. 
-         Through this app, you'll find key insights and AI-related metrics displayed in charts that help you track ongoing developments. 
-         With this dashboard, I aim to support the growing and vital public conversation about AI.")
+info_multi = '''Currently, AI development and usage decisions are limited to a small group of entrepreneurs and engineers. 
+AI Horizon Scanner displays AI-related metrics in charts and key insights that help you track ongoing developments.  With this dashboard, I aim to support the growing and vital public conversation about AI.'''
+st.info(info_multi)
 
 # Weekly Spotlight
 current_week = datetime.now().strftime("%U")
