@@ -230,7 +230,7 @@ elif section == "🌍 Geographic Distribution":
     col1.metric("Leading Country", f"{top_country}:", help="Country with highest AI systems by 2025")
     col2.metric("USA Market Share:", f"{us_share:.1%}%", help="USA share in global AI systems")
     col3.metric("Highest Patent Application:", f"{top_patent_country.iloc[1,2]/1e3:.1f}K", f"{top_patent_country.iloc[1,0]}", help=f"Country with highest patent application")
-    col4.metric("In Europe", f"{count}", "Country", help=f"Number of European countries passed AI-related bill into law"")
+    col4.metric("In Europe", f"{count}", "Country", help=f"Number of European countries passed AI-related bill into law")
 
     matter_text = '''The geographic concentration of AI development affects global power dynamics and determines which cultural perspectives are embedded in these influential technologies'''
     explain_text = '''**Dominance**: The US leads significantly in large-scale AI systems, followed by China, with other countries far behind.   
