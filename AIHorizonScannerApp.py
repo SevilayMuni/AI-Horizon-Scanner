@@ -332,13 +332,13 @@ elif section == "💡 Innovation":
     
     # Worldwide AI Related Patent Applications by Status
     fig10 = go.Figure()
-    fig10.add_trace(go.Bar(x=df_patent_world['year'], name="Granted", y=df_patent_world['num_patent_granted__field_all'], text=df_patent_world['num_patent_granted__field_all'],
+    fig10.add_trace(go.Bar(x=df_patent_world['year'], name="Granted", y=df_patent_world['num_patent_granted__field_all'], width=250, height=400, text=df_patent_world['num_patent_granted__field_all'],
                            textfont=dict(size=10, weight='bold'), marker_color='rgb(97, 152, 142)'))
-    fig10.add_trace(go.Bar(x=df_patent_world['year'], name="Applied", y=df_patent_world['num_patent_applications__field_all'],
+    fig10.add_trace(go.Bar(x=df_patent_world['year'], name="Applied", y=df_patent_world['num_patent_applications__field_all'], width=250, height=400,
                            text=df_patent_world['num_patent_applications__field_all'], textfont=dict(size=10, weight='bold'), marker_color='rgb(222, 143, 110)'))
     fig10.update_traces(hoverinfo="text+name", marker=dict(opacity=0.8))
     fig10.update_layout(barmode="stack", yaxis=dict(title="Patent Count"), xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), legend_title="Status", 
-                        hovermode="x unified", width=250, height=400, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', 
+                        hovermode="x unified", margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', 
                         title="Worldwide AI Related Patent Applications by Status", title_x=0.27)
     st.plotly_chart(fig10, use_container_width=True)
 
