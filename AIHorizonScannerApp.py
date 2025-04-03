@@ -324,10 +324,10 @@ elif section == "💡 Innovation":
     # 'Affiliation of Research Teams Building AI systems' Plot
     color_discrete_map9={'Academia': 'rgb(238, 99, 82)', 'Industry': 'rgb(121, 132, 120)', 'Academia & Industry Collab': 'rgb(76, 134, 168)', 'Other': 'rgb(170, 109, 163)'}
     fig9 = px.bar(df_affiliation, x="year", y="yearly_count", color="entity", text_auto=False, color_discrete_map = color_discrete_map9, 
-                  labels={"entity": "Sector", "year": "Year", "yearly_count": "Count"}, title="Affiliation of Research Teams Building AI systems", width=700, height=350)
+                  labels={"entity": "Sector", "year": "Year", "yearly_count": "Count"}, title="Affiliation of Research Teams Building AI systems", width=700, height=400)
     fig9.update_traces(hoverinfo="text+name")
     fig9.update_layout(barmode="stack", yaxis=dict(title="Count"), xaxis=dict(title = "Publication Year", tickmode="linear", dtick=1, tickangle=-45), legend_title="Sector", 
-                       hovermode="x unified", title_x = 0.25, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
+                       hovermode="x unified", title_x = 0.22, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
     st.plotly_chart(fig9, use_container_width=True)
     
     # Worldwide AI Related Patent Applications by Status
@@ -338,7 +338,7 @@ elif section == "💡 Innovation":
                            text=df_patent_world['num_patent_applications__field_all'], textfont=dict(size=10, weight='bold'), marker_color='rgb(222, 143, 110)'))
     fig10.update_traces(hoverinfo="text+name", marker=dict(opacity=0.8))
     fig10.update_layout(barmode="stack", yaxis=dict(title="Patent Count"), xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), legend_title="Status", 
-                        hovermode="x unified", width=600, height=300, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', title="Worldwide AI Related Patent Applications by Status", title_x=0.27)
+                        hovermode="x unified", width=500, height=400, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', title="Worldwide AI Related Patent Applications by Status", title_x=0.25)
     st.plotly_chart(fig10, use_container_width=True)
 
     # 'Worldwide Annual Granted AI Related Patents by Industry' Plot
@@ -349,7 +349,7 @@ elif section == "💡 Innovation":
                    labels={"industry": "Industry", "year": "Year", "patent_count": "Patent Count"}, title="Worldwide Annual Granted AI Related Patents by Industry", width=700, height=400)
     fig11.update_traces(hoverinfo="text+name")
     fig11.update_layout(barmode="stack", xaxis=dict(title = "Year", tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Granted Patent Count"), 
-                        legend_title="Industry", title_x=0.25, margin=dict(l=100, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
+                        legend_title="Industry", title_x=0.22, margin=dict(l=100, r=5, t=35, b=5, pad=5), plot_bgcolor='rgb(249, 248, 248)')
     st.plotly_chart(fig11, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
