@@ -97,11 +97,11 @@ if section == "🔧 AI Development":
     **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.
     **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.'''
     col1, col2 = columns(2)
-    with tab2.col1:
+    with col1: 
         with st.popover("❓❓ Why This Matters"):
             st.markdown(ai_dev_text)
 
-    with tab2.col2:
+    with col2:
         with st.popover("📚 Explain Charts"):
             st.markdown(explain_text)
     
