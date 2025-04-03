@@ -134,7 +134,7 @@ if section == "🔧 AI Development":
     
     # Cost to Train AI Systems Plot
     color_discrete_map = {'Language': 'rgb(237,37,78)', 'Speech': 'rgb(69,56,35)','Vision & ImageGeneration': 'rgb(144,103,189)','Vision': 'rgb(64,89,173)', 
-                          'ImageGeneration': 'rgb(34, 170, 161)','Multimodal': 'rgb(163,59,32)','Other': 'rgb(118,66,72)','Biology': 'rgb(12,206,187)','Games': 'rgb(242,158,76)'}
+                          'Image Generation': 'rgb(4, 139, 168)','Multimodal': 'rgb(163,59,32)','Other': 'rgb(118,66,72)','Biology': 'rgb(12,206,187)','Games': 'rgb(242,158,76)'}
     fig = px.scatter(df_hardware, x="day", y="cost__inflation_adjusted", color="domain", text = 'entity',log_y=True, color_discrete_map=color_discrete_map,
                      labels={"cost__inflation_adjusted": "Cost (USD)", "day": "Time", "entity": "AI System", "Domain": "Domain"},
                      title="Energy Cost to Train AI Systems", width=900, height=450)
