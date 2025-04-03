@@ -297,12 +297,12 @@ elif section == "💡 Innovation":
     yoy_growth = (last_year - prev_year) / prev_year * 100
     top_industry = df_patent_world2.groupby('industry')['patent_count'].sum()
 
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     col1.metric("Industry Affiliation", f"{industry_percent:.1f}%", help="Percentage of industry affiliated AI system developers")
     col2.metric("Academia Affiliation YoY", f"{yoy_academia:.1f}%", help="Change in academia affiliation, 2022 → 2023")
     col3.metric("Granted AI Patents", f"{patents_2023/1e3:.1f}K", help=f"Worldwide granted AI patent count by 2023")
     col4.metric("Granted Patent YoY", f"{yoy_growth:.1f}%", help=f"Worldwide granted AI patent change, 2022 → 2023")
-    col4.metric("Top Industry", f"{top_industry.max()/1e3:.1f}K", top_industry.idxmax(), help=f"Leading industry with granted AI patent")
+    col5.metric("Top Industry", f"{top_industry.max()/1e3:.1f}K", top_industry.idxmax(), help=f"Leading industry with granted AI patent")
     
     matter_text = '''Tracking innovation through patents and research affiliations helps us understand where AI capabilities are being developed and who controls this intellectual property.'''
     explain_text = '''**Shift**: Since 2015, industry involvement has grown dramatically while academic projects have declined, with no purely academic affiliations by 2024.   
