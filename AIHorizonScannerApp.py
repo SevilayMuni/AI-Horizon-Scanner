@@ -91,7 +91,34 @@ if section == "🔧 AI Development":
         questions about equitable access to AI development capabilities.
         """)
 
-    st.subheader("🔧 AI Development Interactive Charts")
+    # 1st KPI
+    df_hardware['year'] = df_hardware['day'].dt.year
+    latest_cost = df_hardware['cost__inflation_adjusted'].max()
+    ai_sys = df_hardware[df_hardware['cost__inflation_adjusted'] == df_hardware['cost__inflation_adjusted'].max()].iloc[0, 0]
+    # 2nd KPI
+    df_computation['year'] = df_computation['day'].dt.year
+    latest_comp = df_computation['training_computation_petaflop'].max()
+    prev_comp = df_computation[df_computation['year'] == df_computation['year'].max()-1]['training_computation_petaflop'].max()
+    delta_cost = (latest_comp - prev_comp)/prev_comp * 100
+    # 3rd KPI
+    avg_datapoint = df_datapoint.groupby('domain')['training_dataset_size__datapoints'].mean()
+    avg_datapoint = avg_datapoint.sort_values(ascending=False).reset_index()
+    # 4th KPI
+    df_parameter['year'] = df_parameter['day'].dt.year
+    avg_params = df_parameter.groupby('year')['parameters'].mean().iloc[-2]
+    # 5th KPI
+    df_cost_hardware['year'] = df_cost_hardware['day'].dt.year
+    df_cost_hardware24 = df_cost_hardware[df_cost_hardware['year'] == 2024]
+    df_cost_hardware24 = df_cost_hardware24.groupby('organization_categorization').agg({'training_computation_petaflop':'mean','parameters': 'mean'}).iloc[1,:]
+    
+    st.subheader("🔧 AI Development")
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Most Expensive AI", f"{ai_sys}:", f"${latest_cost/1e6:.1f}M", help="Latest most expensive AI to train")
+    col2.metric("Training Computation YoY:", f"{delta_cost:.1f}%", help="Year-over-Year change in training computation")
+    col3.metric("Highest Avg Training Datapoints:", f"{avg_datapoint.iloc[0, 0]} with", f"{avg_datapoint.iloc[0, 1]/1e9:.1f}B", help=f"AI domain with highest training datapoint")
+    col4.metric("Avg Parameters in New Systems:", f"{avg_params/1e9:.1f}B", help=f"Average adjusted parameter number in latest year")
+    col5.metric("2024 Industry Avg:", f"{df_cost_hardware24.iloc[0]/1e9:.1f}B petaFLOP", f"{df_cost_hardware24.iloc[1]/1e9:.1f}B parameters", help=f"Industry developed AI systems in 2024")
+    
     ai_dev_text = '''Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.'''
     explain_text = '''**Insight:** Language models require orders of magnitude more computation than other domains.
     **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.
