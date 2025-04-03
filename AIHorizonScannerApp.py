@@ -338,7 +338,8 @@ elif section == "💡 Innovation":
                            text=df_patent_world['num_patent_applications__field_all'], textfont=dict(size=10, weight='bold'), marker_color='rgb(222, 143, 110)'))
     fig10.update_traces(hoverinfo="text+name", marker=dict(opacity=0.8))
     fig10.update_layout(barmode="stack", yaxis=dict(title="Patent Count"), xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), legend_title="Status", 
-                        hovermode="x unified", width=500, height=400, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', title="Worldwide AI Related Patent Applications by Status", title_x=0.25)
+                        hovermode="x unified", width=400, height=400, margin=dict(l=10, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(249, 248, 248, 0.5)', 
+                        title="Worldwide AI Related Patent Applications by Status", title_x=0.27)
     st.plotly_chart(fig10, use_container_width=True)
 
     # 'Worldwide Annual Granted AI Related Patents by Industry' Plot
