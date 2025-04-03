@@ -340,7 +340,7 @@ elif section == "💡 Innovation":
     fig10.update_layout(barmode="stack", yaxis=dict(title="Patent Count"), xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), legend_title="Status", 
                         hovermode="x unified", margin=dict(l=10, r=5, t=35, b=5, pad=5), width=250, height=400, plot_bgcolor='rgba(249, 248, 248, 0.5)', 
                         title="Worldwide AI Related Patent Applications by Status", title_x=0.27)
-    st.plotly_chart(fig10, use_container_width=True)
+    st.plotly_chart(fig10, use_container_width=True, width=250, height=400)
 
     # 'Worldwide Annual Granted AI Related Patents by Industry' Plot
     color_discrete_map11={'Banking & Finance': 'rgb(18, 19, 15)', 'Industry & Manufacturing': 'rgb(214, 143, 214)', 'Energy & Management': 'rgb(214, 69, 80)', 
