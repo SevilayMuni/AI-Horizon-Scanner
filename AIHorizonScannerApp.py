@@ -96,7 +96,7 @@ if section == "🔧 AI Development":
     explain_text = '''**Insight:** Language models require orders of magnitude more computation than other domains.
     **Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.
     **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.'''
-    col1, col2 = columns(2)
+    col1, col2 = st.columns(2)
     with col1: 
         with st.popover("❓❓ Why This Matters"):
             st.markdown(ai_dev_text)
