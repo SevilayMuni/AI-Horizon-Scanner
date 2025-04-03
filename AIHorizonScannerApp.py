@@ -120,17 +120,17 @@ if section == "🔧 AI Development":
     col5.metric("Industry Avg:", f"{df_cost_hardware24.iloc[0]/1e9:.1f}B pFLOP", f"{df_cost_hardware24.iloc[1]/1e9:.1f}B parameters", help=f"Industry developed AI systems in 2024")
     
     ai_dev_text = '''Understanding the resources required to develop AI systems helps us assess who can participate in AI development and how access to these technologies might be distributed.'''
-    explain_text = '''**Trend**: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.   
-    **Actionable**: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.'''
-    explain_text2 = '''**Insight**: Language models require orders of magnitude more computation than other domains.    
-    **Surprise**: Early vision systems from the 1960s, such as Perceptron, required remarkably high computation for their era.   
-    **Implication**: The computational demands of AI may create barriers to entry for smaller organizations.'''
-    explain_text3 = '''**Finding**: Modern language models use trillion-scale datasets (e.g., DeepSeek-V3's 14.8 trillion in 2024), while early vision systems used only thousands of data points.   
-    **Concern**: These massive datasets raise questions about data sourcing practices and potential copyright issues.'''  
-    explain_text4 = '''**Trend**: Industry collaborations now produce AI systems with the most parameters, outpacing purely academic efforts.       
-    **Example**: In 2018, the Mesh Tensorflow Transformer (Industry) contained 2.8B parameters, exceeding academic collaborations of that time.'''
-    explain_text5 = '''**Relationship**: There's a strong positive correlation between parameters and computation needs, though industry systems show greater parameter efficiency.   
-    **Surprise**: Some academic systems use high computation despite having relatively fewer parameters.'''
+    explain_text = '''***Trend***: Training costs have grown exponentially since 2017, with multimodal systems becoming the costliest to train.   
+    ***Actionable***: As costs and energy consumption continue rising, policymakers should consider implementing environmental regulations for AI training.'''
+    explain_text2 = '''***Insight***: Language models require orders of magnitude more computation than other domains.    
+    ***Surprise***: Early vision systems from the 1960s, such as Perceptron, required remarkably high computation for their era.   
+    ***Implication***: The computational demands of AI may create barriers to entry for smaller organizations.'''
+    explain_text3 = '''***Finding***: Modern language models use trillion-scale datasets (e.g., DeepSeek-V3's 14.8 trillion in 2024), while early vision systems used only thousands of data points.   
+    ***Concern***: These massive datasets raise questions about data sourcing practices and potential copyright issues.'''  
+    explain_text4 = '''***Trend***: Industry collaborations now produce AI systems with the most parameters, outpacing purely academic efforts.       
+    ***Example***: In 2018, the Mesh Tensorflow Transformer (Industry) contained 2.8B parameters, exceeding academic collaborations of that time.'''
+    explain_text5 = '''***Relationship***: There's a strong positive correlation between parameters and computation needs, though industry systems show greater parameter efficiency.   
+    ***Surprise***: Some academic systems use high computation despite having relatively fewer parameters.'''
     col1, col2, col3 = st.columns(3)
     with col1: 
         with st.popover("❓❓ Why This Matters"):
@@ -160,8 +160,8 @@ if section == "🔧 AI Development":
                          'Multiple Domains': 'rgb(240, 56, 107)', 'Other': 'rgb(118, 66, 72)','Biology': 'rgb(138, 155, 104)', 'Games': 'rgb(242, 158, 76)'}
     fig2 = px.scatter(df_computation, x="day", y="training_computation_petaflop", color="domain", log_y=True, color_discrete_map=color_discrete_map2, 
                       labels={"training_computation_petaflop": "Computation", "day": "Time", "entity": "AI System", "domain": "Domain"},
-                      title="Computation Used to Train AI Systems", width=500, height=400)
-    fig2.update_traces(marker=dict(size=7.5, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
+                      title="Computation Used to Train AI Systems", width=450, height=400)
+    fig2.update_traces(marker=dict(size=7, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
     fig2.update_layout(yaxis=dict(type="log", tickvals=tickvals), xaxis_title="Year", yaxis_title="Training Computation (petaFLOP)", hovermode="closest", 
                        legend_title="AI Domain", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.3)
     st.plotly_chart(fig2, use_container_width=True)
@@ -173,7 +173,7 @@ if section == "🔧 AI Development":
         with st.popover("📈 Explain Parameter Chart"):
             st.markdown(explain_text4)
     with col3:
-        with st.popover("🔍 Explain Computation vs. Parameter Chart"):
+        with st.popover("🔍 Explain Computation vs. Parameter"):
             st.markdown(explain_text5)
 
     # 'Datapoints Used to Train AI Systems' Plot
@@ -182,8 +182,8 @@ if section == "🔧 AI Development":
                          'Multiple Domains': 'rgb(240, 56, 107)', 'Other': 'rgb(118, 66, 72)', 'Biology': 'rgb(138, 155, 104)', 'Games': 'rgb(242, 158, 76)'}
     fig3 = px.scatter(df_datapoint, x="day", y="training_dataset_size__datapoints", color="domain", log_y=True, color_discrete_map=color_discrete_map3,
                       labels={"training_dataset_size__datapoints": "Size", "day": "Time", "entity": "AI System", "domain": "Domain"}, 
-                      title="Datapoints Used to Train AI Systems", hover_data = ['entity', 'domain'], width=500, height=400)
-    fig3.update_traces(marker=dict(size=7.5, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
+                      title="Datapoints Used to Train AI Systems", hover_data = ['entity', 'domain'], width=450, height=400)
+    fig3.update_traces(marker=dict(size=7, opacity=0.7, line=dict(width=0.5, color='black')), textposition="top center", showlegend=True, textfont=dict(size=9, style="italic"))
     fig3.update_layout(yaxis=dict(type="log", tickvals=tickvals3), xaxis_title="Year", yaxis_title="Training Datapoints", legend_title="AI Domain", 
                        hovermode="closest", margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(240, 247, 244, 0.5)', title_x=0.3)
     st.plotly_chart(fig3, use_container_width=True)
