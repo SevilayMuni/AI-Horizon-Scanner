@@ -10,10 +10,7 @@ from plotly.subplots import make_subplots
 from datetime import datetime
 
 # Configure page
-st.set_page_config(
-    page_title="Democratizing AI Development Knowledge",
-    page_icon=":bar_chart:",
-    layout="wide")
+st.set_page_config(page_title="AI Horizon Scanner App", page_icon=":bar_chart:", layout="wide")
 
 # Load data
 @st.cache_data
@@ -64,8 +61,10 @@ df_view_gender19 = df_view_gender[df_view_gender['year'] == 2019]
 df_view_gender21 = df_view_gender[df_view_gender['year'] == 2021]
 
 # Header
-st.title("AI Horizon Scanner App")
-st.subheader("Democratizing AI Development Knowledge")
+st.header("AI Horizon Scanner App: Democratizing AI Development Knowledge")
+st.info("Currently, decisions about AI development and usage are limited to a small group of entrepreneurs and engineers. 
+         Through this app, you'll find key insights and AI-related metrics displayed in charts that help you track ongoing developments. 
+         With this dashboard, I aim to support the growing and vital public conversation about AI.")
 
 # Weekly Spotlight
 current_week = datetime.now().strftime("%U")
