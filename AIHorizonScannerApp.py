@@ -216,8 +216,6 @@ if section == "🔧 AI Development":
 elif section == "🌍 Geographic Distribution":
     st.subheader("🌍 Geographic Distribution Interactive Plots")
     # KPIs
-    top_country = df_cumulative.groupby('entity')['cumulative_count'].max().idxmax()
-        
     df_cumulative25 = df_cumulative[df_cumulative['year'] == 2025]        
     us_share =(df_cumulative25[df_cumulative25['entity'] == "United States"]['cumulative_count'] / df_cumulative25['cumulative_count'].sum()).iloc[0]
     
@@ -227,7 +225,7 @@ elif section == "🌍 Geographic Distribution":
     print(f"{count}", "Country", "Passed AI-related Bill into Law")
                
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("Leading Country", f"{top_country}:", help="Country with highest AI systems by 2025")
+    col1.metric("Leading Country", "USA", help="Country with highest AI systems by 2025")
     col2.metric("USA Market Share:", f"{us_share:.1%}%", help="USA share in global AI systems")
     col3.metric("Highest Patent Application:", f"{top_patent_country.iloc[1,2]/1e3:.1f}K", f"{top_patent_country.iloc[1,0]}", help=f"Country with highest patent application")
     col4.metric("In Europe", f"{count}", "Country", help=f"Number of European countries passed AI-related bill into law")
@@ -246,13 +244,13 @@ elif section == "🌍 Geographic Distribution":
         with st.popover("❓❓ Why This Matters"):
             st.markdown(matter_text)
     with col2:
-        with st.popover("🤖 AI Count Chart"):
+        with st.popover("🤖 Explain AI Count Chart"):
             st.markdown(explain_text)
     with col3:
-        with st.popover("📝 Patent Chart"):
+        with st.popover("📝 Explain Patent Chart"):
             st.markdown(explain_text2)
     with col4:
-        with st.popover("💼 Bill Chart"):
+        with st.popover("💼 Explain Bill Chart"):
             st.markdown(explain_text3)
 
     
