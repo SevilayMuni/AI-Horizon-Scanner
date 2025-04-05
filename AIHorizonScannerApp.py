@@ -13,6 +13,14 @@ st.set_page_config(page_title="AI Horizon Scanner App", page_icon=":bar_chart:",
 # Sidebar navigation
 st.sidebar.title("Navigation")
 section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Comparison Tool"])
+# Mini-poll
+st.sidebar.subheader("What's Your AI Opinion?")
+    with st.sidebar.form("ai_opinion_poll"):
+        opinion = st.radio("How do you think AI will impact society in the next 20 years?", ["Mostly helpful", "Mostly harmful", "Both equally", "Not sure"])
+        age_group = st.selectbox("Your age group", ["Under 30", "30-49", "50-64", "65+"])
+        submitted = st.form_submit_button("Submit")
+        if submitted:
+            st.success("Thanks for sharing your opinion!")
 
 # Load data
 @st.cache_data
@@ -478,14 +486,55 @@ elif section == "💵 Investment":
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "👥 Public View":
-    # Mini-poll
-    st.subheader("What's Your AI Opinion?")
-    with st.form("ai_opinion_poll"):
-        opinion = st.radio("How do you think AI will impact society in the next 20 years?", ["Mostly helpful", "Mostly harmful", "Both equally", "Not sure"])
-        age_group = st.selectbox("Your age group", ["Under 30", "30-49", "50-64", "65+"])
-        submitted = st.form_submit_button("Submit")
-        if submitted:
-            st.success("Thanks for sharing your opinion!")
+    
+    worried_work = df_automated_survey[df_automated_survey['opinion'] == "Very Worried"]['opinion_count'].sum() / df_automated_survey['opinion_count'].sum() * 100
+
+    young_group = df_automated_survey[(df_automated_survey['entity'] == "18-29 years") & (df_automated_survey['opinion'] == "Not Worried")]['opinion_count'].values[0]
+    aged_group = df_automated_survey[(df_automated_survey['entity'] == "65+ years") & (df_automated_survey['opinion'] == "Not Worried")]['opinion_count'].values[0]
+    automation_age_gap = (young_group - aged_group)
+    
+    total_responses = df_view_country['opinion_percent'].sum()
+    positive_responses = df_view_country[df_view_country['opinion'] == "Mostly Helpful"]['opinion_percent'].sum()
+    ai_impact_sentiment = (positive_responses / total_responses) * 100
+    
+    male_positive = df_view_gender[(df_view_gender['entity'] == "Male") & (df_view_gender['opinion'] == "Mostly Helpful")]['opinion_percent'].mean()
+    female_positive = df_view_gender[(df_view_gender['entity'] == "Female") & (df_view_gender['opinion'] == "Mostly Helpful")]['opinion_percent'].mean()
+    gender_sentiment_gap = male_positive - female_positive
+    
+    safety_gap = (df_view3[(df_view3['entity'] == "Richest 20%") & (df_view3['view'] == "Feel Safe")]['view_percent'].values[0] -  df_view3[(df_view3['entity'] == "Poorest 20%") & (df_view3['view'] == "Feel Safe")]['view_percent'].values[0])
+    print("Safety Perception Gap", f"{safety_gap:.1f}%", "Rich vs Poor")
+    
+    col1, col2, col3, col4, col5= st.columns(5)
+    col1.metric("Work Automation Concern", f"{worried_work:.1f}%", "Very worried", help="Very Worried response percentage in total")
+    col2.metric("Age Perception Gap", f"{automation_age_gap:.1f}", "Young vs Elderly", help="Not Worried distribution difference between young and aged groups")
+    col3.metric(f"AI Positive Sentiment: {ai_impact_sentiment:.1f}%", help=f"Percentage of positive sentiment on AI's societal impact")
+    col4.metric("Gender Sentiment Gap", f"{gender_sentiment_gap:.1f}%", help=f"Difference of positive sentiment on AI's societal impact between gender groups")
+    col5.metric("Safety Perception Gap",f"{safety_gap:.1f}%", "Rich vs Poor", help=f"Difference of Feel Safe response on autonomous cars between rich and poor groups")
+    
+    matter_text = '''Public perception influences policy decisions, adoption rates, and the social license for AI development, making it crucial to understand diverse perspectives.'''
+    explain_text = '''**Age Divide:** Younger workers (18-29) worry more about automation over time, while the 65+ group shows the least concern.   
+    **Trend:** From 2022 to 2024, the "Not Worried" category is shrinking across most age groups, implying growing anxiety about automation.'''
+    explain_text2 = '''**Optimism Gap:** Countries like South Korea and China show strong optimism about AI, while Turkey shows the highest skepticism.     
+    **Uncertainty:** Countries with higher "No Opinion" responses (Russia, Canada) may have less public discourse or education about AI technologies.          
+    **Regional Gap:** More economically developed regions (East Asia, Europe, Australia) show higher optimism than developing regions.     
+    **Negativity:** Overall perception of AI as "Mostly Harmful" decreased from 2019 to 2021.          
+    **Gender Gap:** Males consistently show more optimism about AI's societal impact than females across both years.'''
+    explain_text3 = '''**Safety Concerns:** Across all demographic groups, the majority (64-71%) do not feel safe with self-driving car technology.      
+    **Trend:** Trust in self-driving technology decreases with age. The younger 15-29 group and the richest 20% show the highest comfort levels, while only 22% of those 65+ feel safe.      
+    **Economic Disparity:** The richest 20% are significantly more likely to feel safe with autonomous vehicles than the poorest 20%.'''
+    col1, col2, col3, col4 = st.columns(4)
+    with col1: 
+        with st.popover("❓❓ Why This Matters"):
+            st.markdown(matter_text)
+    with col2:
+        with st.popover("💸 Explain Automation Chart"):
+            st.markdown(explain_text)
+    with col3:
+        with st.popover("🧰 Explain AI Impact Charts"):
+            st.markdown(explain_text2)
+    with col4:
+        with st.popover("🤖 Explain Safety Chart"):
+            st.markdown(explain_text3)
     
     st.subheader("👥 Public View Interactive Plots")
     # Americans Opinion About Their Work Being Automated
@@ -540,6 +589,8 @@ elif section == "👥 Public View":
                         yaxis={'categoryorder': 'array', 'categoryarray': ['65+ years', '50-64 years', '30-49 years', '15-29 years', 'Poorest 20%', 'Richest 20%']},
                         yaxis_title="", legend_title="View", margin=dict(l=100, r=5, t=35, b=5, pad=5), width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
     st.plotly_chart(fig20, use_container_width=True)
+
+    
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🔍 Comparison Tool":
