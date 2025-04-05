@@ -493,7 +493,7 @@ elif section == "👥 Public View":
     fig16 = px.bar(df_automated_survey, x='year', y='opinion_count', color='opinion', barmode='stack', facet_col='entity', color_discrete_map = color_discrete_map16,
                    labels = {'entity': 'Age Group', 'opinion': 'Opinion', 'year': 'Year','opinion_count': 'Count'})
     fig16.update_traces(marker_line_color='rgb(60, 60, 60)',marker_line_width = 1.5, marker_opacity=0.8)
-    fig16.update_layout(title_text='Americans Opinion About Their Work Being Automated',xaxis_title='Year', yaxis_title='Opinion Count',legend_title='Opinion', 
+    fig16.update_layout(title_text='Americans Opinion About Their Work Being Automated',title_x=0.25, xaxis_title='Year', yaxis_title='Opinion Count',legend_title='Opinion', 
                         width = 1000, height = 450, plot_bgcolor='rgb(250, 249, 249)')
     st.plotly_chart(fig16, use_container_width=True)
 
@@ -502,25 +502,18 @@ elif section == "👥 Public View":
     fig17 = px.bar(df_view_country, x='opinion_percent', y='entity', color='opinion', color_discrete_map = color_discrete_map17, barmode='stack',
                    labels = {'entity': 'Country', 'opinion': 'Opinion', 'year': 'Year', 'opinion_percent': 'Percentage'})
     fig17.update_traces(texttemplate='%{x:.1f}%', textposition='inside', textfont = dict(size = 10.5, weight = 'bold'), marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5, marker_opacity=0.7)
-    fig17.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Country", title_x=0.165, xaxis_title = '',yaxis_title='',legend_title='Opinion',
+    fig17.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Country", title_x=0.25, xaxis_title = '',yaxis_title='',legend_title='Opinion',
                         margin=dict(l=100, r=5, t=35, b=5, pad=5), width=900, height=400, plot_bgcolor='rgb(250, 249, 249)')
-
+    st.plotly_chart(fig17, use_container_width=True)
+    
     # 'Views on AI's Societal Impact in Next 20 Years by Region' Plot
     color_discrete_map18 = {'Mostly Helpful':'rgb(14, 177, 210)', 'No Opinion':'rgb(66, 75, 84)','Mostly Harmful':'rgb(255, 0, 53)', 'Neither':'rgb(206, 141, 102)'}
     fig18 = px.bar(df_view_continent21, x='opinion_percent', y='entity', color='opinion', color_discrete_map= color_discrete_map18, barmode='stack',
                    labels = {'entity': 'Country', 'opinion': 'Opinion', 'year': 'Year', 'opinion_percent': 'Percentage'})
     fig18.update_traces(texttemplate='%{x:.1f}%', textposition='inside',textfont = dict(size = 10.5, weight = 'bold'),marker_line_color='rgb(60, 60, 60)',marker_line_width=1.5, marker_opacity=0.8)
-    fig18.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Region",title_x=0.21, xaxis_title = '',yaxis_title='',legend_title='Opinion',
+    fig18.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Region",title_x=0.25, xaxis_title = '',yaxis_title='',legend_title='Opinion',
                         margin=dict(l=100, r=5, t=35, b=5, pad=5),width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
-    
-    # Create a container with constrained height
-    with st.container(height=450):  # Slightly taller than graphs
-        col1, col2 = st.columns(2)
-        with col1:
-            st.plotly_chart(fig17, use_container_width=True)
-        
-        with col2:
-            st.plotly_chart(fig18, use_container_width=True)
+   st.plotly_chart(fig18, use_container_width=True)
 
     # 'Male/Female Views on AI's Societal Impact' Sunburst Charts
     color_discrete_map19 = {'Mostly Helpful': 'rgb(64, 71, 109)', 'No Opinion': 'rgb(172, 190, 163)','Mostly Harmful': 'rgb(242, 71, 48)', 'Neither': 'rgb(189, 160, 188)'}
@@ -543,7 +536,7 @@ elif section == "👥 Public View":
                    title="Global Views on Self-Driving Cars by Demographic Group (2021)", width=900, height=400, color_discrete_map = color_discrete_map20)
     fig20.update_traces(hoverinfo="text+name", texttemplate='%{x:.0f}%', textposition='inside',textfont = dict(size = 10.5, weight = 'bold'),
                         marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5, marker_opacity=0.8)
-    fig20.update_layout(barmode="stack", xaxis=dict(title = "", tickmode="linear", dtick=10, tickangle=0), title_x = 0.135, 
+    fig20.update_layout(barmode="stack", xaxis=dict(title = "", tickmode="linear", dtick=10, tickangle=0), title_x = 0.3, 
                         yaxis={'categoryorder': 'array', 'categoryarray': ['65+ years', '50-64 years', '30-49 years', '15-29 years', 'Poorest 20%', 'Richest 20%']},
                         yaxis_title="", legend_title="View", margin=dict(l=100, r=5, t=35, b=5, pad=5), width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
     st.plotly_chart(fig20, use_container_width=True)
