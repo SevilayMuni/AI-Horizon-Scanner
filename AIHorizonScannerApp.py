@@ -488,26 +488,21 @@ elif section == "💵 Investment":
 elif section == "👥 Public View":
     
     worried_work = df_automated_survey[df_automated_survey['opinion'] == "Very Worried"]['opinion_count'].sum() / df_automated_survey['opinion_count'].sum() * 100
-
     young_group = df_automated_survey[(df_automated_survey['entity'] == "18-29 years") & (df_automated_survey['opinion'] == "Not Worried")]['opinion_count'].values[0]
     aged_group = df_automated_survey[(df_automated_survey['entity'] == "65+ years") & (df_automated_survey['opinion'] == "Not Worried")]['opinion_count'].values[0]
     automation_age_gap = (young_group - aged_group)
-    
     total_responses = df_view_country['opinion_percent'].sum()
     positive_responses = df_view_country[df_view_country['opinion'] == "Mostly Helpful"]['opinion_percent'].sum()
     ai_impact_sentiment = (positive_responses / total_responses) * 100
-    
     male_positive = df_view_gender[(df_view_gender['entity'] == "Male") & (df_view_gender['opinion'] == "Mostly Helpful")]['opinion_percent'].mean()
     female_positive = df_view_gender[(df_view_gender['entity'] == "Female") & (df_view_gender['opinion'] == "Mostly Helpful")]['opinion_percent'].mean()
     gender_sentiment_gap = male_positive - female_positive
-    
     safety_gap = (df_view3[(df_view3['entity'] == "Richest 20%") & (df_view3['view'] == "Feel Safe")]['view_percent'].values[0] -  df_view3[(df_view3['entity'] == "Poorest 20%") & (df_view3['view'] == "Feel Safe")]['view_percent'].values[0])
-    print("Safety Perception Gap", f"{safety_gap:.1f}%", "Rich vs Poor")
     
     col1, col2, col3, col4, col5= st.columns(5)
     col1.metric("Work Automation Concern", f"{worried_work:.1f}%", "Very worried", help="Very Worried response percentage in total")
     col2.metric("Age Perception Gap", f"{automation_age_gap:.1f}", "Young vs Elderly", help="Not Worried distribution difference between young and aged groups")
-    col3.metric(f"AI Positive Sentiment: {ai_impact_sentiment:.1f}%", help=f"Percentage of positive sentiment on AI's societal impact")
+    col3.metric("Positive AI Sentiment", f"{ai_impact_sentiment:.1f}%", help=f"Percentage of positive sentiment on AI's societal impact")
     col4.metric("Gender Sentiment Gap", f"{gender_sentiment_gap:.1f}%", help=f"Difference of positive sentiment on AI's societal impact between gender groups")
     col5.metric("Safety Perception Gap",f"{safety_gap:.1f}%", "Rich vs Poor", help=f"Difference of Feel Safe response on autonomous cars between rich and poor groups")
     
@@ -589,8 +584,6 @@ elif section == "👥 Public View":
                         yaxis={'categoryorder': 'array', 'categoryarray': ['65+ years', '50-64 years', '30-49 years', '15-29 years', 'Poorest 20%', 'Richest 20%']},
                         yaxis_title="", legend_title="View", margin=dict(l=100, r=5, t=35, b=5, pad=5), width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
     st.plotly_chart(fig20, use_container_width=True)
-
-    
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🔍 Comparison Tool":
