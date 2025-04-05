@@ -420,7 +420,7 @@ elif section == "💵 Investment":
         with st.popover("🧰 Explain Sectoral Charts"):
             st.markdown(explain_text2)
     with col4:
-        with st.popover("🤖 Explain Generative AI Chart"):
+        with st.popover("🤖 Explain GenAI Chart"):
             st.markdown(explain_text3)
     
     # Annual Private Investment in AI by Location
@@ -460,12 +460,12 @@ elif section == "💵 Investment":
 
     # Volatility Visualization
     fig141 = px.bar(volatility_df, x='entity', y='volatility_score', color='volatility_score', title='<b>AI Sector Volatility Scores</b><br>Max Yearly Growth - Max Yearly Decline',
-                    labels={'volatility_score': 'Volatility Score', 'entity': 'Sector'}, color_continuous_scale='thermal_r', width=700, height=400)
+                    labels={'volatility_score': 'Volatility Score', 'entity': 'Sector'}, color_continuous_scale='thermal_r', width=700, height=500)
 
     fig141.update_layout(hovermode='x unified', xaxis={'categoryorder':'total descending'}, yaxis_title="Volatility Score (Percentage)", plot_bgcolor='rgba(248, 247, 255, 0.7)')
     avg_score = volatility_df['volatility_score'].mean()
     fig141.add_hline(y=avg_score, line_dash="dot", annotation_text=f'Average: {avg_score:.0f}', annotation_position="top right")
-    st.plotly_chart(fig141, use_container_width=True)
+    st.plotly_chart(fig141, use_container_width=False)
     
     # 'Worldwide Private Investment in Generative AI' Bar Plot
     fig15 = px.bar(df_investment3, x="year", y="generative_ai",labels={"year": "Year", "generative_ai": "Amount($)"}, title="Worldwide Private Investment in Generative AI", width=500, height=400)
@@ -473,7 +473,7 @@ elif section == "💵 Investment":
                         textposition="outside",hoverinfo="text", marker_color='rgb(255, 90, 95)', marker_opacity=0.7,marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5)
     fig15.update_layout(xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0),yaxis=dict(title="Private Investment (USD)"), title_x = 0.3,
                         margin=dict(l=0, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(248, 247, 255, 0.7)')
-    st.plotly_chart(fig15, use_container_width=True)
+    st.plotly_chart(fig15, use_container_width=False)
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "👥 Public View":
