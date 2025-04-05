@@ -586,24 +586,49 @@ elif section == "👥 Public View":
     st.plotly_chart(fig20, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
-elif section == "🔍 Comparison Tool":
-    st.subheader("Comparison Tool")
-    st.markdown("Use this tool to compare different aspects of AI development across countries, domains, or time periods.")
+elif section == "🔍 Chatbot":
+    # Load API key securely
+    openai.api_key = st.secrets["OPENAI_API_KEY"]
     
-    col1, col2 = st.columns(2)
-    with col1:
-        comparison_type = st.selectbox("Compare by:", ["Country", "Domain", "Organization Type"])
-    with col2:
-        metric = st.selectbox("Metric:", ["Investment", "Patents", "System Count", "Training Cost"])
+    st.subheader("AI Chatbot Assistant 🤖")
+    st.markdown("Ask me anything about artificial intelligence, machine learning, or deep learning concepts.")
     
-    if st.button("Generate Comparison"):
-        # Placeholder for comparison logic
-        st.write("Comparison results would appear here based on selected parameters")
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = [
+            {"role": "system", "content": (
+                "You are an expert AI assistant. You only answer questions related to "
+                "artificial intelligence, machine learning, deep learning, data science, and related topics. "
+                "If the question is not related to AI, politely respond that you're only trained for AI topics."
+            )}
+        ]
+    
+    # Display previous messages (excluding system message)
+    for message in st.session_state.messages[1:]:
+        with st.chat_message(message["role"]):
+            st.markdown(message["content"])
+    
+    # Chat input
+    if prompt := st.chat_input("Ask about AI..."):
+        # Display user message
+        with st.chat_message("user"):
+            st.markdown(prompt)
+        st.session_state.messages.append({"role": "user", "content": prompt})
+    
+        # Get assistant response from OpenAI with factual tone
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",
+            messages=st.session_state.messages,
+            temperature=0.3,
+        )
+    
+        reply = response.choices[0].message["content"]
         
-        # Example visualization
-        fig = px.bar(x=["USA", "China", "EU", "Other"], y=[45, 38, 12, 5],labels={'x': 'Region', 'y': f'{metric} (Billions)'},title=f"{metric} Comparison by {comparison_type}")
-        st.plotly_chart(fig, use_container_width=True)
-
+        # Display assistant response
+        with st.chat_message("assistant"):
+            st.markdown(reply)
+        st.session_state.messages.append({"role": "assistant", "content": reply})
+    
 # Footer
 st.markdown("---")
 st.markdown(''':rainbow[End-to-end project is done by] :blue-background[Sevilay Munire Girgin]''')
