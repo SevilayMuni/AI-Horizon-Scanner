@@ -513,7 +513,7 @@ elif section == "👥 Public View":
     fig18.update_traces(texttemplate='%{x:.1f}%', textposition='inside',textfont = dict(size = 10.5, weight = 'bold'),marker_line_color='rgb(60, 60, 60)',marker_line_width=1.5, marker_opacity=0.8)
     fig18.update_layout(title_text="Views on AI's Societal Impact in Next 20 Years by Region",title_x=0.25, xaxis_title = '',yaxis_title='',legend_title='Opinion',
                         margin=dict(l=100, r=5, t=35, b=5, pad=5),width=800, height=400, plot_bgcolor='rgb(250, 249, 249)')
-   st.plotly_chart(fig18, use_container_width=True)
+    st.plotly_chart(fig18, use_container_width=True)
 
     # 'Male/Female Views on AI's Societal Impact' Sunburst Charts
     color_discrete_map19 = {'Mostly Helpful': 'rgb(64, 71, 109)', 'No Opinion': 'rgb(172, 190, 163)','Mostly Harmful': 'rgb(242, 71, 48)', 'Neither': 'rgb(189, 160, 188)'}
