@@ -14,13 +14,13 @@ st.set_page_config(page_title="AI Horizon Scanner App", page_icon=":bar_chart:",
 st.sidebar.title("Navigation")
 section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Comparison Tool"])
 # Mini-poll
-st.sidebar.subheader("What's Your AI Opinion?")
-    with st.sidebar.form("ai_opinion_poll"):
-        opinion = st.radio("How do you think AI will impact society in the next 20 years?", ["Mostly helpful", "Mostly harmful", "Both equally", "Not sure"])
-        age_group = st.selectbox("Your age group", ["Under 30", "30-49", "50-64", "65+"])
-        submitted = st.form_submit_button("Submit")
-        if submitted:
-            st.success("Thanks for sharing your opinion!")
+st.sidebar.subheader(''':rainbow[What's Your AI Opinion?]''')
+with st.sidebar.form("ai_opinion_poll"):
+    opinion = st.radio("How do you think AI will impact society in the next 20 years?", ["Mostly helpful", "Mostly harmful", "Both equally", "Not sure"])
+    age_group = st.selectbox("Your age group", ["Under 30", "30-49", "50-64", "65+"])
+    submitted = st.form_submit_button("Submit")
+    if submitted:
+        st.success("Thanks for sharing your opinion!")
 
 # Load data
 @st.cache_data
