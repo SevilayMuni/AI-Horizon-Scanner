@@ -587,7 +587,6 @@ elif section == "👥 Public View":
 
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🔍 Comparison Tool":
-    elif section == "🔍 Comparison Tool":
     st.subheader("🔍 AI Development Comparison Tool")
     st.markdown("Compare key AI development metrics across countries, domains, or organization types.")
     
@@ -778,6 +777,7 @@ elif section == "🔍 Comparison Tool":
             except Exception as e:
                 st.error(f"Error generating comparison: {str(e)}")
                 st.info("Please check if the selected combination of filters returns valid data.")
+    
     
 # Footer
 st.markdown("---")
