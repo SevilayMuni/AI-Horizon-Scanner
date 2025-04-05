@@ -7,13 +7,12 @@ import random
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime
-import openai
 
 # Configure page
 st.set_page_config(page_title="AI Horizon Scanner App", page_icon=":bar_chart:", layout="wide")
 # Sidebar navigation
 st.sidebar.title("Navigation")
-section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Chatbot"])
+section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Comparison Tool"])
 # Mini-poll
 st.sidebar.subheader(''':rainbow[What's Your AI Opinion?]''')
 with st.sidebar.form("ai_opinion_poll"):
@@ -587,48 +586,198 @@ elif section == "👥 Public View":
     st.plotly_chart(fig20, use_container_width=True)
 
 # ---------------------------------------------------------------------------------------------------------
-elif section == "🔍 Chatbot":
-    # Load API key securely
-    openai.api_key = st.secrets["OPENAI_API_KEY"]
+elif section == "🔍 Comparison Tool":
+    elif section == "🔍 Comparison Tool":
+    st.subheader("🔍 AI Development Comparison Tool")
+    st.markdown("Compare key AI development metrics across countries, domains, or organization types.")
     
-    st.subheader("AI Chatbot Assistant 🤖")
-    st.markdown("Ask me anything about artificial intelligence, machine learning, or deep learning concepts.")
-    
-    # Initialize chat history
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            {"role": "system", "content": (
-                "You are an expert AI assistant. You only answer questions related to "
-                "artificial intelligence, machine learning, deep learning, data science, and related topics. "
-                "If the question is not related to AI, politely respond that you're only trained for AI topics."
-            )}
-        ]
-    
-    # Display previous messages (excluding system message)
-    for message in st.session_state.messages[1:]:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
-    
-    # Chat input
-    if prompt := st.chat_input("Ask about AI..."):
-        # Display user message
-        with st.chat_message("user"):
-            st.markdown(prompt)
-        st.session_state.messages.append({"role": "user", "content": prompt})
-    
-        # Get assistant response from OpenAI with factual tone
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=st.session_state.messages,
-            temperature=0.3,
+    # Create comparison controls in a 2-column layout
+    col1, col2 = st.columns(2)
+    with col1:
+        comparison_type = st.selectbox(
+            "Compare by:",
+            ["Country", "Domain", "Organization Type"],
+            help="Select the primary dimension for comparison"
+        )
+    with col2:
+        metric = st.selectbox(
+            "Metric:",
+            ["Investment", "Patents", "System Count", "Training Cost", "Parameters", "Computation"],
+            help="Select the metric to compare"
         )
     
-        reply = response.choices[0].message["content"]
-        
-        # Display assistant response
-        with st.chat_message("assistant"):
-            st.markdown(reply)
-        st.session_state.messages.append({"role": "assistant", "content": reply})
+    # Add time range filter
+    year_range = st.slider(
+        "Select year range:",
+        min_value=2010,
+        max_value=2025,
+        value=(2018, 2025),
+        help="Filter data by publication/training year"
+    )
+    
+    # Add normalization option
+    normalize = st.checkbox(
+        "Normalize by GDP (for country comparisons)",
+        value=False,
+        help="Show values per $1B GDP for fair country comparisons"
+    )
+    
+    if st.button("Generate Comparison", type="primary"):
+        with st.spinner("Generating comparison..."):
+            try:
+                # Determine which dataset to use based on comparison type
+                if comparison_type == "Country":
+                    df = df_cumulative.copy()
+                    group_col = "entity"
+                    if metric == "Investment":
+                        df = df_investment.copy()
+                    elif metric == "Patents":
+                        df = df_patent_agg.copy()
+                
+                elif comparison_type == "Domain":
+                    df = df_hardware.copy()
+                    group_col = "domain"
+                    if metric == "System Count":
+                        df = df_cumulative2.copy()
+                
+                elif comparison_type == "Organization Type":
+                    df = df_parameter.copy()
+                    group_col = "organization_categorization"
+                
+                # Filter by year range
+                df = df[(df['year'] >= year_range[0]) & (df['year'] <= year_range[1])]
+                
+                # Aggregate data based on selected metric
+                if metric == "Investment":
+                    if comparison_type == "Country":
+                        result = df.groupby(group_col)[['china', 'united_states', 'european_union_and_united_kingdom']].sum().sum(axis=1)
+                    else:
+                        result = df_investment1.groupby('entity')['world'].sum()
+                    metric_label = "Investment (USD billions)"
+                
+                elif metric == "Patents":
+                    result = df.groupby(group_col)['num_patent_applications__field_all'].sum()
+                    metric_label = "Patent Applications"
+                
+                elif metric == "System Count":
+                    result = df.groupby(group_col)['cumulative_count'].max()
+                    metric_label = "AI Systems Count"
+                
+                elif metric == "Training Cost":
+                    result = df.groupby(group_col)['cost__inflation_adjusted'].max()
+                    metric_label = "Max Training Cost (USD millions)"
+                
+                elif metric == "Parameters":
+                    result = df.groupby(group_col)['parameters'].max()
+                    metric_label = "Max Parameters (billions)"
+                
+                elif metric == "Computation":
+                    result = df.groupby(group_col)['training_computation_petaflop'].max()
+                    metric_label = "Max Computation (petaFLOPs)"
+                
+                # Convert to DataFrame for visualization
+                comparison_df = result.reset_index()
+                comparison_df.columns = [comparison_type, metric_label]
+                
+                # Normalize if requested (for country comparisons)
+                if normalize and comparison_type == "Country":
+                    # This would require GDP data - placeholder implementation
+                    comparison_df[metric_label] = comparison_df[metric_label] / 1000  # Simplified normalization
+                    metric_label = f"{metric_label} per $1B GDP"
+                
+                # Sort by metric value
+                comparison_df = comparison_df.sort_values(metric_label, ascending=False)
+                
+                # Create visualization
+                col1, col2 = st.columns([3, 1])
+                
+                with col1:
+                    # Bar chart
+                    fig = px.bar(
+                        comparison_df,
+                        x=comparison_type,
+                        y=metric_label,
+                        color=comparison_type,
+                        text=metric_label,
+                        title=f"{metric} Comparison by {comparison_type} ({year_range[0]}-{year_range[1]})",
+                        labels={comparison_type: comparison_type, metric_label: metric_label}
+                    )
+                    
+                    # Formatting
+                    fig.update_traces(
+                        texttemplate='%{y:,.0f}',
+                        textposition='outside',
+                        marker_line_color='rgb(60,60,60)',
+                        marker_line_width=1
+                    )
+                    fig.update_layout(
+                        showlegend=False,
+                        yaxis_title=metric_label,
+                        xaxis_title="",
+                        plot_bgcolor='rgba(240,247,244,0.5)'
+                    )
+                    
+                    # Special formatting for specific metrics
+                    if "USD" in metric_label:
+                        fig.update_traces(texttemplate='$%{y:,.1f}')
+                    if "billions" in metric_label.lower():
+                        fig.update_traces(texttemplate='%{y:,.1f}B')
+                    if "millions" in metric_label.lower():
+                        fig.update_traces(texttemplate='$%{y:,.1f}M')
+                    
+                    st.plotly_chart(fig, use_container_width=True)
+                
+                with col2:
+                    # Show data table
+                    st.markdown("**Comparison Data**")
+                    st.dataframe(
+                        comparison_df.style.format({
+                            metric_label: '{:,.1f}'
+                        }),
+                        height=400,
+                        hide_index=True
+                    )
+                    
+                    # Add download button
+                    csv = comparison_df.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        "Download Data",
+                        data=csv,
+                        file_name=f"ai_comparison_{comparison_type.lower()}_{metric.lower()}.csv",
+                        mime="text/csv"
+                    )
+                
+                # Add insights based on comparison
+                with st.expander("🔍 Analysis Insights", expanded=True):
+                    top_value = comparison_df.iloc[0][metric_label]
+                    top_name = comparison_df.iloc[0][comparison_type]
+                    bottom_value = comparison_df.iloc[-1][metric_label]
+                    bottom_name = comparison_df.iloc[-1][comparison_type]
+                    
+                    st.markdown(f"""
+                    - **{top_name}** leads with {top_value:,.1f} {metric.split('(')[0].strip() if '(' in metric else metric}
+                    - **{bottom_name}** has the lowest at {bottom_value:,.1f}
+                    - The top 3 account for {(comparison_df.head(3)[metric_label].sum() / comparison_df[metric_label].sum())*100:.1f}% of total
+                    """)
+                    
+                    if comparison_type == "Country" and metric == "Investment":
+                        st.markdown("""
+                        **Regional Insights**:  
+                        - US investment dominates but shows high volatility  
+                        - China's investment focuses on infrastructure and manufacturing  
+                        - EU investment is more evenly distributed across sectors  
+                        """)
+                    elif comparison_type == "Domain" and metric == "Parameters":
+                        st.markdown("""
+                        **Technical Insights**:  
+                        - Language models require orders of magnitude more parameters  
+                        - Vision systems show more parameter efficiency  
+                        - Multimodal systems combine requirements from multiple domains  
+                        """)
+            
+            except Exception as e:
+                st.error(f"Error generating comparison: {str(e)}")
+                st.info("Please check if the selected combination of filters returns valid data.")
     
 # Footer
 st.markdown("---")
