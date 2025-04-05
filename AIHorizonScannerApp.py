@@ -45,9 +45,10 @@ def load_inno_invest_data():
     df_investment1 = pd.read_parquet("./data/df_investment1.parquet", engine = 'pyarrow')
     df_investment2 = pd.read_parquet("./data/df_investment2.parquet", engine = 'pyarrow')
     df_investment3 = pd.read_parquet("./data/df_investment3.parquet", engine = 'pyarrow')
-    return df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3
+    df_invest_general = pd.read_parquet("./data/df_invest_general.parquet", engine = 'pyarrow')
+    return df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3, df_invest_general
 
-df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3 = load_inno_invest_data()
+df_affiliation, df_patent_world, df_patent_world2, df_investment, df_investment1, df_investment2, df_investment3, df_invest_general = load_inno_invest_data()
 
 @st.cache_data
 def load_public_data():
