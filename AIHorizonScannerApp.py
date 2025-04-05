@@ -7,12 +7,13 @@ import random
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime
+import openai
 
 # Configure page
 st.set_page_config(page_title="AI Horizon Scanner App", page_icon=":bar_chart:", layout="wide")
 # Sidebar navigation
 st.sidebar.title("Navigation")
-section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Comparison Tool"])
+section = st.sidebar.radio("Go to:", ["🔧 AI Development", "🌍 Geographic Distribution", "💡 Innovation", "💵 Investment", "👥 Public View", "🔍 Chatbot"])
 # Mini-poll
 st.sidebar.subheader(''':rainbow[What's Your AI Opinion?]''')
 with st.sidebar.form("ai_opinion_poll"):
