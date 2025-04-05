@@ -4,7 +4,6 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 import random
-from PIL import Image
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 from datetime import datetime
@@ -72,6 +71,24 @@ def format_investment(value):
         return f'{round(value / 1e6, 2)}M'
     else:
         return str(value)
+
+def calculate_volatility(df, entity_name):
+    """Calculate volatility score for a specific sector"""
+    sector_df = df_invest_general[df_invest_general['entity'] == entity_name].sort_values('year')
+    sector_df['yoy_growth'] = sector_df['world'].pct_change() * 100
+    max_growth = sector_df['yoy_growth'].max()
+    max_decline = sector_df['yoy_growth'].min()
+    return abs(max_growth - max_decline)
+
+def geographic_concentration(row):
+    """Calculate Herfindahl-Hirschman Index (HHI) for geographic concentration"""
+    total = row['china'] + row['united_states'] + row['european_union_and_united_kingdom']
+    if total == 0:
+        return 0
+    china_share = row['china'] / total
+    us_share = row['united_states'] / total
+    eu_share = row['european_union_and_united_kingdom'] / total
+    return (china_share**2 + us_share**2 + eu_share**2)
 
 info_multi = '''AI Horizon Scanner displays AI-related metrics in charts and key insights that help you track ongoing developments. 
 I aim to support the growing and vital public conversation about AI with this dashboard.'''
@@ -356,6 +373,54 @@ elif section == "💡 Innovation":
 # ---------------------------------------------------------------------------------------------------------
 elif section == "💵 Investment":
     st.subheader("💵 Investment Interactive Plots")
+
+    total_invest = df_investment['world'].sum()
+    us_vs_china = (df_investment[df_investment['year'] == 2023]['united_states'].sum() / df_investment[df_investment['year'] == 2023]['china'].sum())
+
+    volatility_scores = []
+    entities = df_invest_general['entity'].unique()
+    for entity in entities:
+        score = calculate_volatility(df_invest_general, entity)
+        volatility_scores.append({'entity': entity, 'volatility_score': score})
+    volatility_df = pd.DataFrame(volatility_scores).sort_values('volatility_score', ascending=False)
+
+    df_invest_general['geo_concentration'] = df_invest_general.apply(geographic_concentration, axis=1)
+    latest_year = df_invest_general['year'].max()
+    concentration_table = df_invest_general[df_invest_general['year'] == latest_year][['entity', 'geo_concentration']].sort_values('geo_concentration', ascending=False)
+    
+    latest = df_investment3[df_investment3['year'] == 2023]['generative_ai'].sum()
+    prev = df_investment3[df_investment3['year'] == 2022]['generative_ai'].sum()
+    gen_ai_growth = (latest-prev)/prev * 100
+
+    #KPIs
+    col1, col2, col3, col4, col5 = st.columns(5)
+    col1.metric("Total AI Investment", f"${total_invest/1e9:.1f}B",  help="Worldwide total private investment in AI, 2013-2023")
+    col2.metric("US vs China", f"{us_vs_china:.1f}x", help="Private investment USA to China ratio in 2023")
+    col3.metric("Highest Volatility", f"{volatility_df.iloc[0,1]:.1f}%", volatility_df.iloc[0,0], help=f"Private investment volatility score of AI sectors")
+    col4.metric("Geographic Monopoly", concentration_table.iloc[0, 0], help=f"Concentration private investment in AI sectors")
+    col5.metric("Generative AI Growth", f"{gen_ai_growth:.1f}%", help=f"Generative AI private investment growth, 2022 → 2023")
+
+    matter_text = '''Investment patterns reveal which AI applications and regions are attracting capital, shaping the future direction of AI development and commercialization.'''
+    explain_text = '''**Geographic**: The US dominates investments, followed by China.    
+    **Trend**: Worldwide annual private investment increased until 2021, then declined in 2022 due to the COVID-19 pandemic.    
+    **Recovery:** After 2022, the USA showed elevated investment growth while China and the EU region began recovery.'''
+    explain_text2 = '''**Dominance:** Natural Language Processing & Customer Support claim the largest share of private investment.    
+    **Infrastructure Investment Surge**: AI Infrastructure & Governance showed massive investment spikes ($16B in 2023), suggesting a fundamental shift toward building robust AI foundations.'''
+    explain_text3 = '''**Hockey Stick**: Investment exploded from $89M in 2019 to $4B in 2023—a 250x growth in 4 years.         
+    **Warning Sign**: The 2022 dip suggests potential sector volatility.'''
+    col1, col2, col3, col4 = st.columns(4)
+    with col1: 
+        with st.popover("❓❓ Why This Matters"):
+            st.markdown(matter_text)
+    with col2:
+        with st.popover("💸 Explain Regional Chart"):
+            st.markdown(explain_text)
+    with col3:
+        with st.popover("🧰 Explain Sectoral Charts"):
+            st.markdown(explain_text2)
+    with col4:
+        with st.popover("🤖 Explain Generative AI Chart"):
+            st.markdown(explain_text3)
     
     # Annual Private Investment in AI by Location
     fig12 = go.Figure()
@@ -366,14 +431,14 @@ elif section == "💵 Investment":
     fig12.add_trace(go.Scatter(x=df_investment['year'], y=df_investment['world'],name='World', mode='lines+markers', marker_size = 8,marker_color='rgb(63, 124, 172)', opacity=0.7))
     fig12.update_layout(xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Private Investment (USD)"), legend_title="Location",
                         margin=dict(l=5, r=5, t=35, b=5, pad=5), hovermode="x unified", title="Annual Private Investment in AI by Location", title_x = 0.2, 
-                        plot_bgcolor = 'rgba(248, 247, 255, 0.7)', width=900, height=400)
+                        plot_bgcolor = 'rgba(248, 247, 255, 0.7)', width=700, height=400)
     st.plotly_chart(fig12, use_container_width=True)
 
     # 'Worldwide Annual Private Investment in AI by Domain' Plot
     color_discrete_map13={'Insurance Tech': 'rgb(128, 94, 115)', 'Marketing & Digital Ads': 'rgb(255, 93, 115)', 'Manufacturing': 'rgb(45, 70, 84)', 'Creative Content': 'rgb(183, 68, 184)',
                           'Educational Tech': 'rgb(96, 147, 93)','Energy Industry': 'rgb(198, 202, 83)','Medical & Healthcare': 'rgb(170, 80, 66)', 'Retail': 'rgb(243, 156, 107)'}
     fig13 = px.line(df_investment1, x="year", y="world", color="entity", markers=True, labels={"entity":"Domain","year": "Year", "world": "Private Investment"}, 
-                    title="Worldwide Annual Private Investment in AI by Domain", width=900, height=400, color_discrete_map = color_discrete_map13)
+                    title="Worldwide Annual Private Investment in AI by Domain", width=700, height=400, color_discrete_map = color_discrete_map13)
     fig13.update_traces(text=df_investment1["entity"]+ ": " + df_investment1["world"].astype(str), hoverinfo="text+name")
     fig13.update_traces(marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')))
     fig13.update_layout(xaxis=dict(tickmode="linear", dtick=1, tickangle=0), yaxis=dict(title="Private Investment (USD)"), title_x = 0.195, legend_title="Domain", 
@@ -385,19 +450,27 @@ elif section == "💵 Investment":
                           'Autonomous Vehicles': 'rgb(255, 127, 17)', 'Quantum Computing': 'rgb(99, 105, 209)','Cybersecurity & Data Protection': 'rgb(59, 65, 60)',
                           'Data Management & Processing': 'rgb(0, 175, 185)','Facial Recognition': 'rgb(214, 69, 80)', 'NLP & Customer Support': 'rgb(227, 101, 193)'}
     fig14 = px.line(df_investment2, x="year", y="world", color="entity", markers=True, labels={"entity":"Domain","year": "Year", "world": "Private Investment"},
-                    title="Worldwide Annual Private Investment in AI by Domain", width=900, height=400, color_discrete_map = color_discrete_map14)
+                    title="Worldwide Annual Private Investment in AI by Domain", width=600, height=400, color_discrete_map = color_discrete_map14)
     fig14.update_traces(text=df_investment2["entity"]+ ": " + df_investment2["world"].astype(str), hoverinfo="text+name", 
                         marker=dict(size=8, opacity=0.7, line=dict(width=0.5, color='black')))
     fig14.update_layout(xaxis=dict(tickmode="linear", dtick=1, tickangle=0), title_x = 0.157, yaxis=dict(title="Private Investment (USD)"), hovermode="closest",
                         legend_title="Domain", margin=dict(l=5, r=5, t=35, b=5, pad=5),plot_bgcolor='rgba(248, 247, 255, 0.7)')
     st.plotly_chart(fig14, use_container_width=True)
 
+    # Volatility Visualization
+    fig141 = px.bar(volatility_df, x='entity', y='volatility_score', color='volatility_score', title='<b>AI Sector Volatility Scores</b><br>Max Yearly Growth - Max Yearly Decline',
+                    labels={'volatility_score': 'Volatility Score', 'entity': 'Sector'}, color_continuous_scale='thermal_r', width=700, height=400)
 
+    fig141.update_layout(hovermode='x unified', xaxis={'categoryorder':'total descending'}, yaxis_title="Volatility Score (Percentage)", plot_bgcolor='rgba(248, 247, 255, 0.7)')
+    avg_score = volatility_df['volatility_score'].mean()
+    fig141.add_hline(y=avg_score, line_dash="dot", annotation_text=f'Average: {avg_score:.0f}', annotation_position="top right")
+    st.plotly_chart(fig141, use_container_width=True)
+    
     # 'Worldwide Private Investment in Generative AI' Bar Plot
-    fig15 = px.bar(df_investment3, x="year", y="generative_ai",labels={"year": "Year", "generative_ai": "Amount($)"}, title="Worldwide Private Investment in Generative AI", width=900, height=400)
+    fig15 = px.bar(df_investment3, x="year", y="generative_ai",labels={"year": "Year", "generative_ai": "Amount($)"}, title="Worldwide Private Investment in Generative AI", width=500, height=400)
     fig15.update_traces(text=df_investment3['generative_ai'].apply(format_investment),textfont_size=12.5, textfont_weight='bold', textangle=0,textfont_color='rgb(60, 60, 60)', 
                         textposition="outside",hoverinfo="text", marker_color='rgb(255, 90, 95)', marker_opacity=0.7,marker_line_color='rgb(60, 60, 60)', marker_line_width=1.5)
-    fig15.update_layout(xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0),yaxis=dict(title="Private Investment (USD)"), title_x = 0.51,
+    fig15.update_layout(xaxis=dict(title="Year", tickmode="linear", dtick=1, tickangle=0),yaxis=dict(title="Private Investment (USD)"), title_x = 0.3,
                         margin=dict(l=0, r=5, t=35, b=5, pad=5), plot_bgcolor='rgba(248, 247, 255, 0.7)')
     st.plotly_chart(fig15, use_container_width=True)
 
