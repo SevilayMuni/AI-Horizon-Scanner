@@ -501,13 +501,13 @@ elif section == "👥 Public View":
     
     col1, col2, col3, col4, col5= st.columns(5)
     col1.metric("Work Automation Concern", f"{worried_work:.1f}%", "Very worried", help="Very Worried response percentage in total")
-    col2.metric("Age Perception Gap", f"{automation_age_gap:.1f}", "Young vs Elderly", help="Not Worried distribution difference between young and aged groups")
+    col2.metric("Age Perception Gap", f"{automation_age_gap:.1f}", "- Young vs Elderly", help="Not Worried distribution difference between young and aged groups")
     col3.metric("Positive AI Sentiment", f"{ai_impact_sentiment:.1f}%", help=f"Percentage of positive sentiment on AI's societal impact")
     col4.metric("Gender Sentiment Gap", f"{gender_sentiment_gap:.1f}%", help=f"Difference of positive sentiment on AI's societal impact between gender groups")
     col5.metric("Safety Perception Gap",f"{safety_gap:.1f}%", "Rich vs Poor", help=f"Difference of Feel Safe response on autonomous cars between rich and poor groups")
     
     matter_text = '''Public perception influences policy decisions, adoption rates, and the social license for AI development, making it crucial to understand diverse perspectives.'''
-    explain_text = '''**Age Divide:** Younger workers (18-29) worry more about automation over time, while the 65+ group shows the least concern.   
+    explain_text = '''**Age Divide:** Younger workers worry more about automation over time, while the 65+ group shows the least concern.   
     **Trend:** From 2022 to 2024, the "Not Worried" category is shrinking across most age groups, implying growing anxiety about automation.'''
     explain_text2 = '''**Optimism Gap:** Countries like South Korea and China show strong optimism about AI, while Turkey shows the highest skepticism.     
     **Uncertainty:** Countries with higher "No Opinion" responses (Russia, Canada) may have less public discourse or education about AI technologies.          
