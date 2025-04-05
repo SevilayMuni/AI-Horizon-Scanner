@@ -3,4 +3,3 @@ numpy
 pandas
 plotly
 datetime
-openai==0.28
