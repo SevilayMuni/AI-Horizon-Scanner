@@ -588,33 +588,19 @@ elif section == "👥 Public View":
 # ---------------------------------------------------------------------------------------------------------
 elif section == "🔍 Comparison Tool":
     st.subheader("🔍 AI Development Comparison Tool")
-    st.markdown("Compare key AI development metrics across countries, domains, or organization types.")
+    st.markdown(''':orange-background[Compare key AI development metrics across countries, domains, or organization types.]''')
     
     # Create comparison controls
     col1, col2 = st.columns(2)
     with col1:
-        comparison_type = st.selectbox(
-            "Compare by:",
-            ["Country", "Domain", "Organization Type"],
-            help="Select the primary dimension for comparison"
-        )
+        comparison_type = st.selectbox("Compare by:", ["Country", "Domain", "Organization Type"], help="Select the primary dimension for comparison")
     with col2:
-        metric = st.selectbox(
-            "Metric:",
-            ["System Count", "Training Cost", "Parameters", "Computation", "Patents"],
-            help="Select the metric to compare"
-        )
+        metric = st.selectbox("Metric:", ["System Count", "Training Cost", "Parameters", "Computation", "Patents"], help="Select the metric to compare")
     
     # Add time range filter (handle both 'year' and 'day' columns)
     min_year = 2010
-    max_year = 2025
-    year_range = st.slider(
-        "Select year range:",
-        min_value=min_year,
-        max_value=max_year,
-        value=(2018, max_year),
-        help="Filter data by publication/training year"
-    )
+    max_year = 2024
+    year_range = st.slider("Select year range:", min_value=min_year, max_value=max_year, value=(2018, max_year), help="Filter data by publication/training year")
     
     if st.button("Generate Comparison", type="primary"):
         with st.spinner("Generating comparison..."):
@@ -716,15 +702,9 @@ elif section == "🔍 Comparison Tool":
                 
                 with col1:
                     # Bar chart
-                    fig = px.bar(
-                        comparison_df,
-                        x=comparison_type,
-                        y=metric_label,
-                        color=comparison_type,
-                        text=metric_label,
-                        title=f"{metric} Comparison by {comparison_type} ({year_range[0]}-{year_range[1]})",
-                        labels={comparison_type: comparison_type, metric_label: metric_label}
-                    )
+                    fig = px.bar(comparison_df, x=comparison_type, y=metric_label, color=comparison_type, text=metric_label,
+                                 title=f"{metric} Comparison by {comparison_type} ({year_range[0]}-{year_range[1]})",
+                                 labels={comparison_type: comparison_type, metric_label: metric_label})
                     
                     # Formatting based on metric type
                     if "USD" in metric_label:
@@ -736,17 +716,8 @@ elif section == "🔍 Comparison Tool":
                     else:
                         fig.update_traces(texttemplate='%{y:,.0f}')
                     
-                    fig.update_traces(
-                        textposition='outside',
-                        marker_line_color='rgb(60,60,60)',
-                        marker_line_width=1
-                    )
-                    fig.update_layout(
-                        showlegend=False,
-                        yaxis_title=metric_label,
-                        xaxis_title="",
-                        plot_bgcolor='rgba(240,247,244,0.5)'
-                    )
+                    fig.update_traces(textposition='outside', marker_line_color='rgb(60,60,60)', marker_line_width=1)
+                    fig.update_layout(showlegend=False, yaxis_title=metric_label, xaxis_title="", plot_bgcolor='rgba(240,247,244,0.5)')
                     st.plotly_chart(fig, use_container_width=True)
                 
                 with col2:
@@ -762,20 +733,11 @@ elif section == "🔍 Comparison Tool":
                     elif "Computation" in metric_label:
                         display_df[metric_label] = display_df[metric_label].apply(lambda x: f"{x:,.1f}")
                     
-                    st.dataframe(
-                        display_df,
-                        height=400, width = 500, 
-                        hide_index=True
-                    )
+                    st.dataframe(display_df,height=300, width = 500, hide_index=True)
                     
                     # Add download button for raw data
                     csv = comparison_df.to_csv(index=False).encode('utf-8')
-                    st.download_button(
-                        "Download Data",
-                        data=csv,
-                        file_name=f"ai_comparison_{comparison_type.lower()}_{metric.lower()}.csv",
-                        mime="text/csv"
-                    )
+                    st.download_button("Download Data",data=csv,file_name=f"ai_comparison_{comparison_type.lower()}_{metric.lower()}.csv", mime="text/csv")
                 
                 # Add insights based on comparison
                 with st.expander("🔍 Analysis Insights", expanded=True):
