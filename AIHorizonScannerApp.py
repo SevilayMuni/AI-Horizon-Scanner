@@ -288,7 +288,7 @@ elif section == "🌍 Geographic Distribution":
                    labels={"entity": "Country", "year": "Year", "cumulative_count": "AI System Count"}, title="Cumulative Number of Large-Scale AI Systems by Country", width=550, height=450)
     fig6.update_traces(text=df_cumulative["entity"] + ": " + df_cumulative["cumulative_count"].astype(str), hoverinfo="text+name", 
                        marker=dict(size=7, opacity=0.8, line=dict(width=0.5, color='black')))
-    fig6.update_layout(xaxis=dict(tickmode="linear", dtick=10), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.22, 
+    fig6.update_layout(xaxis=dict(tickmode="linear", dtick=1), legend_title="Country", yaxis=dict(title="Cumulative AI System Count"), title_x=0.22, 
                        margin=dict(l=5, r=5, t=35, b=5), plot_bgcolor='rgba(229, 231, 230, 0.5)')
     st.plotly_chart(fig6, use_container_width=True)
 
