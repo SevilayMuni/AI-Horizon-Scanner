@@ -764,7 +764,7 @@ elif section == "🔍 Comparison Tool":
                     
                     st.dataframe(
                         display_df,
-                        height=400,
+                        height=400, width = 500, 
                         hide_index=True
                     )
                     
