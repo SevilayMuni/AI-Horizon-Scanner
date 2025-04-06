@@ -733,7 +733,7 @@ elif section == "🔍 Comparison Tool":
                     elif "Computation" in metric_label:
                         display_df[metric_label] = display_df[metric_label].apply(lambda x: f"{x:,.1f}")
                     
-                    st.dataframe(display_df,height=300, width = 500, hide_index=True)
+                    st.dataframe(display_df,height=300, width=600, hide_index=True)
                     
                     # Add download button for raw data
                     csv = comparison_df.to_csv(index=False).encode('utf-8')
