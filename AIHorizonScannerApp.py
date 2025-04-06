@@ -630,13 +630,13 @@ elif section == "👥 Public View":
         with st.popover("❓❓ Why This Matters"):
             st.markdown(matter_text)
     with col2:
-        with st.popover("💸 Explain Automation Chart"):
+        with st.popover("🗂 Explain Work Chart"):
             st.markdown(explain_text)
     with col3:
-        with st.popover("🧰 Explain AI Impact Charts"):
+        with st.popover("🚀 Explain Impact Charts"):
             st.markdown(explain_text2)
     with col4:
-        with st.popover("🤖 Explain Safety Chart"):
+        with st.popover("🦺 Explain Safety Chart"):
             st.markdown(explain_text3)
     
     st.subheader("👥 Public View Interactive Plots")
