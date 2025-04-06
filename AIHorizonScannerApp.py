@@ -590,7 +590,7 @@ elif section == "🔍 Comparison Tool":
     st.subheader("🔍 AI Development Comparison Tool")
     st.markdown("Compare key AI development metrics across countries, domains, or organization types.")
     
-    # Create comparison controls in a 2-column layout
+    # Create comparison controls
     col1, col2 = st.columns(2)
     with col1:
         comparison_type = st.selectbox(
@@ -601,88 +601,112 @@ elif section == "🔍 Comparison Tool":
     with col2:
         metric = st.selectbox(
             "Metric:",
-            ["Investment", "Patents", "System Count", "Training Cost", "Parameters", "Computation"],
+            ["System Count", "Training Cost", "Parameters", "Computation", "Patents"],
             help="Select the metric to compare"
         )
     
-    # Add time range filter
+    # Add time range filter (handle both 'year' and 'day' columns)
+    min_year = 2010
+    max_year = 2025
     year_range = st.slider(
         "Select year range:",
-        min_value=2010,
-        max_value=2025,
-        value=(2018, 2025),
+        min_value=min_year,
+        max_value=max_year,
+        value=(2018, max_year),
         help="Filter data by publication/training year"
-    )
-    
-    # Add normalization option
-    normalize = st.checkbox(
-        "Normalize by GDP (for country comparisons)",
-        value=False,
-        help="Show values per $1B GDP for fair country comparisons"
     )
     
     if st.button("Generate Comparison", type="primary"):
         with st.spinner("Generating comparison..."):
             try:
-                # Determine which dataset to use based on comparison type
+                # Initialize variables
+                comparison_df = None
+                metric_label = ""
+                
+                # Determine which dataset to use based on comparison type and metric
                 if comparison_type == "Country":
-                    df = df_cumulative.copy()
-                    group_col = "entity"
-                    if metric == "Investment":
-                        df = df_investment.copy()
+                    if metric == "System Count":
+                        df = df_cumulative.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('entity')['cumulative_count'].max().reset_index()
+                        metric_label = "AI Systems Count"
                     elif metric == "Patents":
                         df = df_patent_agg.copy()
+                        comparison_df = df[['entity', 'num_patent_applications__field_all']]
+                        metric_label = "Patent Applications"
                 
                 elif comparison_type == "Domain":
-                    df = df_hardware.copy()
-                    group_col = "domain"
-                    if metric == "System Count":
-                        df = df_cumulative2.copy()
+                    if metric == "Training Cost":
+                        df = df_hardware.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('domain')['cost_inflation_adjusted'].max().reset_index()
+                        metric_label = "Max Training Cost (USD)"
+                    elif metric == "Parameters":
+                        df = df_parameter.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('domain')['parameters'].max().reset_index()
+                        metric_label = "Max Parameters"
+                    elif metric == "Computation":
+                        df = df_computation.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('domain')['training_computation_petaflop'].max().reset_index()
+                        metric_label = "Max Computation (petaFLOPs)"
                 
                 elif comparison_type == "Organization Type":
-                    df = df_parameter.copy()
-                    group_col = "organization_categorization"
+                    if metric == "Training Cost":
+                        df = df_cost_hardware.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('organization_categorization')['cost_inflation_adjusted'].max().reset_index()
+                        metric_label = "Max Training Cost (USD)"
+                    elif metric == "Parameters":
+                        df = df_parameter.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('organization_categorization')['parameters'].max().reset_index()
+                        metric_label = "Max Parameters"
+                    elif metric == "Computation":
+                        df = df_computation.copy()
+                        if 'day' in df.columns:
+                            df['year'] = df['day'].dt.year
+                        comparison_df = df.groupby('organization_categorization')['training_computation_petaflop'].max().reset_index()
+                        metric_label = "Max Computation (petaFLOPs)"
                 
-                # Filter by year range
-                df = df[(df['year'] >= year_range[0]) & (df['year'] <= year_range[1])]
+                # Apply year filtering if 'year' column exists
+                if comparison_df is not None:
+                    if 'year' in df.columns:
+                        df_filtered = df[(df['year'] >= year_range[0]) & (df['year'] <= year_range[1])]
+                        # Recalculate aggregates after filtering
+                        if comparison_type == "Country" and metric == "System Count":
+                            comparison_df = df_filtered.groupby('entity')['cumulative_count'].max().reset_index()
+                        elif comparison_type == "Domain":
+                            if metric == "Training Cost":
+                                comparison_df = df_filtered.groupby('domain')['cost_inflation_adjusted'].max().reset_index()
+                            elif metric == "Parameters":
+                                comparison_df = df_filtered.groupby('domain')['parameters'].max().reset_index()
+                            elif metric == "Computation":
+                                comparison_df = df_filtered.groupby('domain')['training_computation_petaflop'].max().reset_index()
+                        elif comparison_type == "Organization Type":
+                            if metric == "Training Cost":
+                                comparison_df = df_filtered.groupby('organization_categorization')['cost_inflation_adjusted'].max().reset_index()
+                            elif metric == "Parameters":
+                                comparison_df = df_filtered.groupby('organization_categorization')['parameters'].max().reset_index()
+                            elif metric == "Computation":
+                                comparison_df = df_filtered.groupby('organization_categorization')['training_computation_petaflop'].max().reset_index()
                 
-                # Aggregate data based on selected metric
-                if metric == "Investment":
-                    if comparison_type == "Country":
-                        result = df.groupby(group_col)[['china', 'united_states', 'european_union_and_united_kingdom']].sum().sum(axis=1)
-                    else:
-                        result = df_investment1.groupby('entity')['world'].sum()
-                    metric_label = "Investment (USD billions)"
+                # Check if we have valid comparison data
+                if comparison_df is None or comparison_df.empty:
+                    st.warning("No data available for the selected combination. Try different filters.")
+                    st.stop()
                 
-                elif metric == "Patents":
-                    result = df.groupby(group_col)['num_patent_applications__field_all'].sum()
-                    metric_label = "Patent Applications"
-                
-                elif metric == "System Count":
-                    result = df.groupby(group_col)['cumulative_count'].max()
-                    metric_label = "AI Systems Count"
-                
-                elif metric == "Training Cost":
-                    result = df.groupby(group_col)['cost__inflation_adjusted'].max()
-                    metric_label = "Max Training Cost (USD millions)"
-                
-                elif metric == "Parameters":
-                    result = df.groupby(group_col)['parameters'].max()
-                    metric_label = "Max Parameters (billions)"
-                
-                elif metric == "Computation":
-                    result = df.groupby(group_col)['training_computation_petaflop'].max()
-                    metric_label = "Max Computation (petaFLOPs)"
-                
-                # Convert to DataFrame for visualization
-                comparison_df = result.reset_index()
+                # Rename columns for consistent display
+                comparison_col = comparison_df.columns[0]
+                value_col = comparison_df.columns[1]
                 comparison_df.columns = [comparison_type, metric_label]
-                
-                # Normalize if requested (for country comparisons)
-                if normalize and comparison_type == "Country":
-                    # This would require GDP data - placeholder implementation
-                    comparison_df[metric_label] = comparison_df[metric_label] / 1000  # Simplified normalization
-                    metric_label = f"{metric_label} per $1B GDP"
                 
                 # Sort by metric value
                 comparison_df = comparison_df.sort_values(metric_label, ascending=False)
@@ -702,9 +726,17 @@ elif section == "🔍 Comparison Tool":
                         labels={comparison_type: comparison_type, metric_label: metric_label}
                     )
                     
-                    # Formatting
+                    # Formatting based on metric type
+                    if "USD" in metric_label:
+                        fig.update_traces(texttemplate='$%{y:,.1f}')
+                    elif "Parameters" in metric_label:
+                        fig.update_traces(texttemplate='%{y:,.1f}')
+                    elif "Computation" in metric_label:
+                        fig.update_traces(texttemplate='%{y:,.1f}')
+                    else:
+                        fig.update_traces(texttemplate='%{y:,.0f}')
+                    
                     fig.update_traces(
-                        texttemplate='%{y:,.0f}',
                         textposition='outside',
                         marker_line_color='rgb(60,60,60)',
                         marker_line_width=1
@@ -715,29 +747,28 @@ elif section == "🔍 Comparison Tool":
                         xaxis_title="",
                         plot_bgcolor='rgba(240,247,244,0.5)'
                     )
-                    
-                    # Special formatting for specific metrics
-                    if "USD" in metric_label:
-                        fig.update_traces(texttemplate='$%{y:,.1f}')
-                    if "billions" in metric_label.lower():
-                        fig.update_traces(texttemplate='%{y:,.1f}B')
-                    if "millions" in metric_label.lower():
-                        fig.update_traces(texttemplate='$%{y:,.1f}M')
-                    
                     st.plotly_chart(fig, use_container_width=True)
                 
                 with col2:
                     # Show data table
                     st.markdown("**Comparison Data**")
+                    
+                    # Format values based on type
+                    display_df = comparison_df.copy()
+                    if "USD" in metric_label:
+                        display_df[metric_label] = display_df[metric_label].apply(lambda x: f"${x/1e6:,.1f}M" if x >= 1e6 else f"${x:,.0f}")
+                    elif "Parameters" in metric_label:
+                        display_df[metric_label] = display_df[metric_label].apply(lambda x: f"{x/1e9:,.1f}B" if x >= 1e9 else f"{x/1e6:,.1f}M")
+                    elif "Computation" in metric_label:
+                        display_df[metric_label] = display_df[metric_label].apply(lambda x: f"{x:,.1f}")
+                    
                     st.dataframe(
-                        comparison_df.style.format({
-                            metric_label: '{:,.1f}'
-                        }),
+                        display_df,
                         height=400,
                         hide_index=True
                     )
                     
-                    # Add download button
+                    # Add download button for raw data
                     csv = comparison_df.to_csv(index=False).encode('utf-8')
                     st.download_button(
                         "Download Data",
@@ -750,33 +781,35 @@ elif section == "🔍 Comparison Tool":
                 with st.expander("🔍 Analysis Insights", expanded=True):
                     top_value = comparison_df.iloc[0][metric_label]
                     top_name = comparison_df.iloc[0][comparison_type]
-                    bottom_value = comparison_df.iloc[-1][metric_label]
-                    bottom_name = comparison_df.iloc[-1][comparison_type]
                     
-                    st.markdown(f"""
-                    - **{top_name}** leads with {top_value:,.1f} {metric.split('(')[0].strip() if '(' in metric else metric}
-                    - **{bottom_name}** has the lowest at {bottom_value:,.1f}
-                    - The top 3 account for {(comparison_df.head(3)[metric_label].sum() / comparison_df[metric_label].sum())*100:.1f}% of total
-                    """)
+                    insights = [f"- **{top_name}** leads with {top_value:,.1f} {metric}"]
                     
-                    if comparison_type == "Country" and metric == "Investment":
-                        st.markdown("""
-                        **Regional Insights**:  
-                        - US investment dominates but shows high volatility  
-                        - China's investment focuses on infrastructure and manufacturing  
-                        - EU investment is more evenly distributed across sectors  
-                        """)
-                    elif comparison_type == "Domain" and metric == "Parameters":
-                        st.markdown("""
-                        **Technical Insights**:  
-                        - Language models require orders of magnitude more parameters  
-                        - Vision systems show more parameter efficiency  
-                        - Multimodal systems combine requirements from multiple domains  
-                        """)
+                    if len(comparison_df) > 1:
+                        bottom_value = comparison_df.iloc[-1][metric_label]
+                        bottom_name = comparison_df.iloc[-1][comparison_type]
+                        insights.append(f"- **{bottom_name}** has the lowest at {bottom_value:,.1f}")
+                    
+                    if len(comparison_df) >= 3:
+                        top3_share = (comparison_df.head(3)[metric_label].sum() / comparison_df[metric_label].sum()) * 100
+                        insights.append(f"- The top 3 account for {top3_share:.1f}% of total")
+                    
+                    # Domain-specific insights
+                    if comparison_type == "Domain":
+                        if metric == "Training Cost":
+                            insights.append("\n**Training Cost Insights:**")
+                            insights.append("- Language models typically have the highest training costs")
+                            insights.append("- Vision systems show more cost efficiency")
+                        
+                        elif metric == "Parameters":
+                            insights.append("\n**Parameters Insights:**")
+                            insights.append("- Parameter count correlates with model capability but also computational requirements")
+                            insights.append("- Recent models show exponential growth in parameters")
+                    
+                    st.markdown("\n".join(insights))
             
             except Exception as e:
                 st.error(f"Error generating comparison: {str(e)}")
-                st.info("Please check if the selected combination of filters returns valid data.")
+                st.info("Please check the data availability for your selected filters.")
     
     
 # Footer
