@@ -3,10 +3,9 @@
 ## 📌 Overview
 The AI Horizon Scanner is an interactive dashboard that enhances AI knowledge by visualizing key metrics across AI development, geographic distribution, innovation, investment, and public perception. This powerful tool transforms complex AI trends into actionable insights through compelling visualizations and curated weekly AI discoveries.
 
-## Demo App
+##  🚀 Go to AI Horizon Scanner App
 
-[<img src="https://cdn-icons-png.flaticon.com/512/11513/11513299.png" alt="Web App Icon" width="40"/>](https://safestock-ai.streamlit.app/)
-
+[<img src="https://cdn-icons-png.flaticon.com/512/11513/11513299.png" alt="Web App Icon" height=50 width="50"/>](https://ai-horizon-scanner.streamlit.app/)
 
 
 ## 🌟 Why It Matters
@@ -17,7 +16,7 @@ The AI Horizon Scanner is an interactive dashboard that enhances AI knowledge by
 - **Revealing geographic and sectoral disparities**
 - **Tracking the rapid evolution of AI capabilities**
 
-## 🚀 Key Features
+## ✨ Key Features
 - **6 Interactive Sections** covering all aspects of AI evolution
 - **20+ Dynamic Visualizations** with Plotly-powered charts
 - **Weekly Spotlight** showcasing rotating AI breakthroughs
