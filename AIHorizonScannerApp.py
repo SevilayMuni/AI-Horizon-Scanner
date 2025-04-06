@@ -222,9 +222,8 @@ if section == "🔧 AI Development":
     with st.expander(f"📌 Weekly Spotlight (Week {current_week})", expanded=True):
         insight = weekly_insights[selected_week]
         st.markdown(f"""
-        **Key Finding:** {insight['insight']} This rapid development highlights both opportunities and challenges in the AI landscape.
-        [Read more at {insight['source_name']}]({insight['source']})
-        """)
+        **Key Finding:** {insight['insight']} This rapid development highlights both opportunities and challenges in the AI landscape.     
+        [Read more at {insight['source_name']}]({insight['source']})""")
 
     # 1st KPI
     df_hardware['year'] = df_hardware['day'].dt.year
